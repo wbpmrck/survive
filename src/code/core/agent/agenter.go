@@ -21,7 +21,7 @@ type Agenter interface {
 		该方法应该只被调用一次，并且在agent内部创建2个goroutine：
 		一个负责轮询时间片chan,一个负责轮询所有的对外通道组
 	 */
-	Start()(s chan <- *timeRule.TimeSlice)
+	Start()(s chan <- *TimeSliceMessage)
 	/**
 		获取agent的消息处理通道入口
 	 */

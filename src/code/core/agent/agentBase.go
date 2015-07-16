@@ -24,7 +24,7 @@ const (
  */
 type AgentLogicHandler interface {
 	//handle timeSlice event
-	HandleTimeSlice(ts *timeRule.TimeSlice,responseChan chan *AgentMessage)
+	HandleTimeSlice(ts *TimeSliceMessage)
 
 	//handle message event
 	HandleMessage(msg *AgentMessage)
@@ -60,15 +60,17 @@ type AgentBase struct {
 //	和当前agent建立联系的实体所使用的管道对【包括消息通道、管理通道、时间片通道】
 //	connections [] *MessagePipePair
 
-	InMessagePipe chan *AgentMessage
+	inMessagePipe chan *AgentMessage
+	messagePipeSize uint64
 
 	//管理者和agent通信的专用通道
 //	managerPipes *MessagePipePair
-	InManageCommandPipe chan *AgentMessage
+	inManageCommandPipe chan *AgentMessage
+	managePipeSize uint64
 
 	//时间片管道。agent从这个管道，获取行动时间片
 	//在一个时间片内，会告知agent获得了多少行动时间
-	timeInChan chan *timeRule.TimeSlice
+	timeInChan chan *TimeSliceMessage
 }
 
 /**
@@ -87,7 +89,7 @@ func(a *AgentBase) setStatusAndLastChangeTime(s AgentStatus) {
 /**
 	获取agent唯一标识
  */
-func(a *AgentBase) GetIdentity() uint64{
+func(a *AgentBase) GetIdentity() string{
 	return a.identity
 }
 /**
@@ -113,7 +115,7 @@ func(a *AgentBase) GetTimeScale() timeRule.TimeScale{
 	获取管理者专属的消息通道
  */
 func (a *AgentBase) GetManagerPipe()(pipe chan <- *AgentMessage){
-	return a.InManageCommandPipe
+	return a.inManageCommandPipe
 }
 
 ///**
@@ -147,12 +149,13 @@ func (a *AgentBase) GetManagerPipe()(pipe chan <- *AgentMessage){
 获取agent的消息处理通道入口
  */
 func(a *AgentBase) GetMessagePipe()(pipe chan <- *AgentMessage){
-	return a.InMessagePipe
+	return a.inMessagePipe
 }
 /**
 	启动agent
+	agent启动之后，返回自己的时间片chan给外部
  */
-func(a *AgentBase) Start()(s chan <-timeRule.TimeSlice){
+func(a *AgentBase) Start() chan <-*TimeSliceMessage{
 
 	//设置状态为激活的
 	a.setStatusAndLastChangeTime(STATUS_ACTIVATE)
@@ -161,6 +164,7 @@ func(a *AgentBase) Start()(s chan <-timeRule.TimeSlice){
 	go a.startTimeChanPolling()
 	go a.startMessageChanPolling()
 	go a.startManagerMessageChanPolling()
+	return a.timeInChan
 }
 
 /**
@@ -180,7 +184,7 @@ func (a *AgentBase) startTimeChanPolling(){
  */
 func (a *AgentBase) startMessageChanPolling(){
 	for{
-		msg := <-a.InMessagePipe
+		msg := <-a.inMessagePipe
 		if a.logicHandler != nil{
 			a.logicHandler.HandleMessage(msg)
 		}
@@ -191,7 +195,7 @@ func (a *AgentBase) startMessageChanPolling(){
  */
 func (a *AgentBase) startManagerMessageChanPolling(){
 	for{
-		msg := <-a.InManageCommandPipe
+		msg := <-a.inManageCommandPipe
 		if a.logicHandler != nil{
 			a.logicHandler.HandleMessage(msg)
 		}
@@ -203,7 +207,7 @@ func (a *AgentBase) startManagerMessageChanPolling(){
 /**
 	创建一个 AgentBase
  */
-func CreateAgentBase(name string) *AgentBase{
+func CreateAgentBase(name string,logicHandler AgentLogicHandler,managePipeSize,messagePipeSize uint64) *AgentBase{
 	//todo:创建的时候，需要指定类型、名字,logichandler 等，做一些初始化操作
 	agent := &AgentBase{
 		identity:utils.GetGuid(),
@@ -212,6 +216,13 @@ func CreateAgentBase(name string) *AgentBase{
 
 		status:STATUS_NONE,
 		currentTimeScale:timeRule.NewTimeScale(0),
+		lastStatusChangeTime:time.Now(),
+		logicHandler:logicHandler,
+		messagePipeSize:messagePipeSize,
+		managePipeSize:managePipeSize,
+		inMessagePipe:make(chan *AgentMessage,messagePipeSize),
+		inManageCommandPipe:make(chan *AgentMessage,managePipeSize),
+		timeInChan:make(chan *TimeSliceMessage),
 	}
 	return agent
 }
