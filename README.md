@@ -1,5 +1,3 @@
 ##what is this
 
-this is a part-time project,with my best friends.
-
-we will build a funny thing.
+this is a part-time project,it can be a turn-base or real-time SLG game server.

@@ -1,7 +1,8 @@
 //this package describe the game world
 package world
+import "code/core/maps"
 
 type World struct {
 	//map
-	//rule
+	worldMap maps.WorldMap
 }
