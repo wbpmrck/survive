@@ -9,12 +9,7 @@ this is a part-time project,it can be a turn-base or real-time SLG game server.
     > build basic sandbox machanism
     
     > use javascript binding
-    
-    > SQLite support
-    
-    > Redis support
-    
-    > MongoDB support
+  
     
 * rpc
 
@@ -34,3 +29,12 @@ this is a part-time project,it can be a turn-base or real-time SLG game server.
 * demo
 
     > use console and channel to simulate client,"connect" to server, and send/recv messages
+    
+* data persistence
+
+      
+    > SQLite support
+    
+    > Redis support
+    
+    > MongoDB support 
