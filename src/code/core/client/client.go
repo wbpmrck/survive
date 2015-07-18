@@ -1,4 +1,5 @@
 package client
+import "github.com/funny/link"
 
 type ClientType uint16
 
@@ -9,8 +10,8 @@ const (
 )
 
 type Client struct {
-	//客户端ip地址
-	endpointIP string
+	//客户端session
+	endPointSession link.Session
 	//客户端类型
 	clientType ClientType
 	//client使用的鉴权策略
@@ -28,10 +29,11 @@ func (c *Client) Login(subject interface{}) (success bool,returnCode string){
 	}
 	return
 }
-func NewClient(ip string,t ClientType) *Client{
+func NewClient(endPointSession link.Session,author Author,t ClientType) *Client{
 	return &Client{
-		endpointIP:ip,
 		clientType:t,
+		author:author,
+		endPointSession:t,
 		player:nil,
 	}
 }
