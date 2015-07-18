@@ -1,14 +1,13 @@
-//define the base time controller of the game
+//
 package timeRule
 
-//todo:big change,no need to do pipe. just logic
 type TimeRuler interface {
 	/**
 	通常为被regionManager调用获取时间管道
 	返回时间管道pipe
 	timeRuler通过pipe，来告知agent,现在他的时间刻度可以往后走n个时间单位
 	 */
-	GetTimeOutPipe(agent interface{}) (pipe <-chan int)
+	Start(agent interface{}) (pipe <-chan int)
 
 	/**
 	通常被外部管理者调用

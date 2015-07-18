@@ -11,9 +11,9 @@ import (
 type AgentStatus uint32
 
 const (
-	STATUS_NONE AgentStatus = iota
-	STATUS_ACTIVATE
-	STATUS_PAUSE
+	STATUS_NONE AgentStatus = iota	//0
+	STATUS_ACTIVATE	//1
+	STATUS_PAUSE	//2
 )
 //能够和agent建立的连接数上限，默认是4个，也即同时一个agent只能与4个外部agent通信【主要是因为动态的chan数组的select监听实现起来很麻烦，而且官方不推荐】
 //const MAX_CONN_COUNT uint64 = 4
@@ -35,8 +35,10 @@ type AgentLogicHandler interface {
 type AgentBase struct {
 	//唯一标识
 	identity string
+
+	//update 2015-07-18 去掉agentType,通过不同的实现就决定了不同的行为，没有标识的必要了
 	//类型
-	agentType AgentType
+//	agentType AgentType
 	//名字
 	name string
 
@@ -95,9 +97,9 @@ func(a *AgentBase) GetIdentity() string{
 /**
 	获取agentType
  */
-func(a *AgentBase) GetAgentType() AgentType{
-	return a.agentType
-}
+//func(a *AgentBase) GetAgentType() AgentType{
+//	return a.agentType
+//}
 
 /**
 	获取agent name
@@ -212,7 +214,7 @@ func CreateAgentBase(name string,logicHandler AgentLogicHandler,managePipeSize,m
 	agent := &AgentBase{
 		identity:utils.GetGuid(),
 		name : name,
-		agentType:DefaultAgent,
+//		agentType:DefaultAgent,
 
 		status:STATUS_NONE,
 		currentTimeScale:timeRule.NewTimeScale(0),

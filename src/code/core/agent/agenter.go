@@ -4,14 +4,17 @@ import "code/core/timeRule"
 //agent类型
 type AgentType uint32
 
-const DefaultAgent AgentType = 0
+//update 2015-07-18 去掉agentType,通过不同的实现就决定了不同的行为，没有标识的必要了
+//const (
+//	DefaultAgent AgentType = iota //0
+//)
 
 //所有agent必须实现的接口
 type Agenter interface {
 
 	//获取Id
 	GetIdentity() string
-	GetAgentType() AgentType
+//	GetAgentType() AgentType
 
 	GetName() string
 	//获取当前agent所处的时间刻度
