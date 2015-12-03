@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaf Demo</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+
+<div id="root">
+
+    <input type="text" data-bind="value:toSend" style="width: 500px;">
+    <button data-bind="click:sendClick">Send</button>
+
+    <ul data-bind="foreach:messages">
+        <li data-bind="text:desc"></li>
+    </ul>
+
+</div>
+<script src="jquery.min.js"></script>
+<script src="knockout-3.3.0.js"></script>
+<script src="encoding.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

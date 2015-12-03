@@ -1,4 +1,0 @@
-模拟内部流程：
-
-1、服务端，从初始化regionManager和对于的timeRule开始
-2、使用client开启一个goroutine，一方面接受用户输入,一方面直接给region的消息管道发送消息
