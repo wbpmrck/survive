@@ -1,7 +1,7 @@
 !<arch>
 __.PKGDEF       0           0     0     644     30265     `
 go object windows amd64 go1.5.1 X:none
-build id "2bf5677805f0d4e972740998741e7326268dc4c2"
+build id "ec3a9e531ae3f404ec1e85ada22969175c83ddcf"
 
 $$
 package base
@@ -199,12 +199,12 @@ go object windows amd64 go1.5.1 X:none
   .runtime.writebarrierptr   À
   .runtime.writebarrierptr   ô
   .runtime.writebarrierptr   –
-  0runtime.morestack_noctxt   °  &"".autotmp_0008 \type.*github.com/name5566/leaf/module.Skeleton "".autotmp_0007  htype.chan *github.com/name5566/leaf/chanrpc.CallInfo "".autotmp_0006  Dtype.map[interface {}]interface {} "".autotmp_0005  htype.chan *github.com/name5566/leaf/chanrpc.CallInfo "".autotmp_0004  Dtype.map[interface {}]interface {} Jgithub.com/name5566/leaf/chanrpc.sÂ·3 _Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 Ÿtype.int Jgithub.com/name5566/leaf/chanrpc.sÂ·3 Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 ¿type.int Lgithub.com/name5566/leaf/timer.dispÂ·3 ^type.*github.com/name5566/leaf/timer.Dispatcher Fgithub.com/name5566/leaf/timer.lÂ·2 ¯type.int @github.com/name5566/leaf/go.gÂ·3 /Htype.*github.com/name5566/leaf/go.Go @github.com/name5566/leaf/go.lÂ·2 ßtype.int Hgithub.com/name5566/leaf/module.sÂ·1 O\type.*github.com/name5566/leaf/module.Skeleton "".~r0 Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.sÂ·3 oZtype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 Ïtype.int "".skeleton ?\type.*github.com/name5566/leaf/module.Skeleton "".~r0  \type.*github.com/name5566/leaf/module.Skeleton &°Ş¯°›   4&£§š8 b =5}™'m'¥5¡5Ÿ288A TgclocalsÂ·3f5ad981ffe0a0544ca80763a9ac44e3 TgclocalsÂ·c411f25c812ee8ac0e64c5d2318287af   ~E:/MyProject/GitHub/survive/src/survive/server/base/skeleton.goş"".init  À  ¶eH‹%(   H‹‰    H;av>¶    €û t¶    €ûuÃè    Æ    è    è    è    Æ    Ãè    ë¥      2  "".initdoneÂ·   J  "".initdoneÂ·   `
+  0runtime.morestack_noctxt   °  &"".autotmp_0008 \type.*github.com/name5566/leaf/module.Skeleton "".autotmp_0007  htype.chan *github.com/name5566/leaf/chanrpc.CallInfo "".autotmp_0006  Dtype.map[interface {}]interface {} "".autotmp_0005  htype.chan *github.com/name5566/leaf/chanrpc.CallInfo "".autotmp_0004  Dtype.map[interface {}]interface {} Jgithub.com/name5566/leaf/chanrpc.sÂ·3 _Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 Ÿtype.int Jgithub.com/name5566/leaf/chanrpc.sÂ·3 Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 ¿type.int Lgithub.com/name5566/leaf/timer.dispÂ·3 ^type.*github.com/name5566/leaf/timer.Dispatcher Fgithub.com/name5566/leaf/timer.lÂ·2 ¯type.int @github.com/name5566/leaf/go.gÂ·3 /Htype.*github.com/name5566/leaf/go.Go @github.com/name5566/leaf/go.lÂ·2 ßtype.int Hgithub.com/name5566/leaf/module.sÂ·1 O\type.*github.com/name5566/leaf/module.Skeleton "".~r0 Ztype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.sÂ·3 oZtype.*github.com/name5566/leaf/chanrpc.Server Jgithub.com/name5566/leaf/chanrpc.lÂ·2 Ïtype.int "".skeleton ?\type.*github.com/name5566/leaf/module.Skeleton "".~r0  \type.*github.com/name5566/leaf/module.Skeleton &°Ş¯°›   4&£§š8 b =5}™'m'¥5¡5Ÿ288A TgclocalsÂ·3f5ad981ffe0a0544ca80763a9ac44e3 TgclocalsÂ·c411f25c812ee8ac0e64c5d2318287af   ~E:/MyProject/GitHub/survive/src/survive/server/base/skeleton.goş"".init  À  ¶eH‹%(   H‹‰    H;av>¶    €û t¶    €ûuÃè    Æ    è    è    è    Æ    Ãè    ë¥      2  "".initdoneÂ·   J  "".initdoneÂ·   `
   "runtime.throwinit   p "".initdoneÂ·   |
   Jgithub.com/name5566/leaf/chanrpc.init   †
   Hgithub.com/name5566/leaf/module.init   
   0survive/server/conf.init   œ "".initdoneÂ·   ª
-  0runtime.morestack_noctxt        ` ` $` 
+  0runtime.morestack_noctxt        ` ` &` 
  /1 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   ~E:/MyProject/GitHub/survive/src/survive/server/base/skeleton.goş4type..hash.[8]interface {} à  ØeH‹%(   H‹‰    H;a†ˆ   Hƒì(H‹L$81ÀHÇD$   H‹l$H9è}\H‰D$ H‰ÅH‰ÈHÁÀH»¿c»kïR H¯ØH‰ØH‹\$0Hƒû t;HÁåHëH‰$H‰D$8H‰D$è    H‹L$H‹D$ HÿÀH‹l$H9è|¤H‰L$@HƒÄ(Ã‰ëÁè    éTÿÿÿ      ò
   (runtime.nilinterhash   Æ
   0runtime.morestack_noctxt   0P  

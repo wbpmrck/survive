@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--interval:单位ns= 1/1000,000,ms-->
+<seelog type="adaptive" mininterval="100000000" maxinterval="2000000000" critmsgcount="15">
+    <outputs formatid="default">
+        <filter levels="info,warn,error,critical">
+            <console/>
+            <!--maxsize:单位字节-->
+            <rollingfile type="size" filename="./log/server.info.log" maxsize="2048000" maxrolls="20" />
+        </filter>
+
+
+        <!--当生产环境的时候，下面的日志是否记录会看service.ini里的日志相关配置 begin-->
+        <filter levels="trace,debug">
+            <console/>
+            <!--maxsize:单位字节-->
+            <rollingfile type="size" filename="./log/server.debug.log" maxsize="2048000" maxrolls="20" />
+        </filter>
+        <!--当生产环境的时候，注释下面的日志 end-->
+
+    </outputs>
+    <formats>
+        <format id="default" format="[%LEVEL] %Date %Time %RelFile:%Func %Msg%n"/>
+    </formats>
+</seelog>

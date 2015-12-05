@@ -1,14 +1,14 @@
 !<arch>
-__.PKGDEF       0           0     0     644     28080     `
+__.PKGDEF       0           0     0     644     28129     `
 go object windows amd64 go1.5.1 X:none
-build id "05d6bc7cdb039a1466815487099d0d773222727a"
+build id "283e788040d99fb1346cd80e4a313c839519425c"
 
 $$
 package gate
 	import runtime "runtime"
 	import internal "survive/server/gate/internal"
-	import game "survive/server/game"
 	import msg "survive/server/msg"
+	import login "survive/server/login"
 	import gate "github.com/name5566/leaf/gate" // indirect
 	import network "github.com/name5566/leaf/network" // indirect
 	type @"github.com/name5566/leaf/network".Processor interface { Marshal(@"github.com/name5566/leaf/network".msg interface {}) (? [][]byte, ? error); Route(@"github.com/name5566/leaf/network".msg interface {}, @"github.com/name5566/leaf/network".userData interface {}) (? error); Unmarshal(@"github.com/name5566/leaf/network".data []byte) (? interface {}, ? error) }
@@ -188,6 +188,7 @@ package gate
 	func (@"github.com/name5566/leaf/network/json".pÂ·1 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") SetRouter (@"github.com/name5566/leaf/network/json".msgÂ·2 interface {}, @"github.com/name5566/leaf/network/json".msgRouterÂ·3 *@"github.com/name5566/leaf/chanrpc".Server)
 	func (@"github.com/name5566/leaf/network/json".pÂ·3 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Unmarshal (@"github.com/name5566/leaf/network/json".dataÂ·4 []byte) (? interface {}, ? error)
 	var @"survive/server/msg".Processor *@"github.com/name5566/leaf/network/json".Processor
+	import game "survive/server/game" // indirect
 	var @"survive/server/game".ChanRPC *@"github.com/name5566/leaf/chanrpc".Server
 	type @"reflect".imethod struct { @"reflect".name *string; @"reflect".pkgPath *string; @"reflect".typ *@"reflect".rtype }
 	type @"reflect".interfaceType struct { @"reflect".? @"reflect".rtype "reflect:\"interface\""; @"reflect".methods []@"reflect".imethod }
@@ -198,21 +199,21 @@ package gate
 	func @"reflect".toType (@"reflect".tÂ·2 *@"reflect".rtype "esc:0x12") (? @"reflect".Type) { if @"reflect".tÂ·2 == nil { return nil }; return @"reflect".tÂ·2 }
 
 $$
-_go_.o          0           0     0     644     3229      `
+ _go_.o          0           0     0     644     3238      `
 go object windows amd64 go1.5.1 X:none
 
 !
-  go13ld<survive/server/gate/internal.a*survive/server/game.a(survive/server/msg.a þ"".init.1  €  öeH‹%(   H‹‰    H;av^Hƒì0H    H‰$è    H‹L$1íH‰)H‰iH‹    H‰$H    H‰D$ H‰D$H‰L$(H‰L$H‹    H‰\$è    HƒÄ0Ãè    ë…      :  :type.survive/server/msg.Hello   L
-  "runtime.newobject   v  8survive/server/msg.Processor   Œ  <type.*survive/server/msg.Hello   Â  6survive/server/game.ChanRPC   Ö
+  go13ld<survive/server/gate/internal.a(survive/server/msg.a,survive/server/login.a þ"".init.1  €  öeH‹%(   H‹‰    H;av^Hƒì0H    H‰$è    H‹L$1íH‰)H‰iH‹    H‰$H    H‰D$ H‰D$H‰L$(H‰L$H‹    H‰\$è    HƒÄ0Ãè    ë…      :  :type.survive/server/msg.Hello   L
+  "runtime.newobject   v  8survive/server/msg.Processor   Œ  <type.*survive/server/msg.Hello   Â  8survive/server/login.ChanRPC   Ö
   xgithub.com/name5566/leaf/network/json.(*Processor).SetRouter   ê
-  0runtime.morestack_noctxt    `  "".autotmp_0000  <type.*survive/server/msg.Hello `Y_` € U 
+  0runtime.morestack_noctxt    `  "".autotmp_0000  <type.*survive/server/msg.Hello `Y_` € U	 
  %[ TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad   zE:/MyProject/GitHub/survive/src/survive/server/gate/router.goþ"".init  à  ÞeH‹%(   H‹‰    H;a†‹   Hƒì¶    €û t¶    €ûuHƒÄÃè    Æ    è    è    è    H    H‰$è    H‹\$€=     uH‰    è    Æ    HƒÄÃH-    H‰,$H‰\$è    ëØè    éQÿÿÿ"      B  "".initdoneÂ·   Z  "".initdoneÂ·   x
   "runtime.throwinit   ˆ "".initdoneÂ·   ”
   Bsurvive/server/gate/internal.init   ž
-  0survive/server/game.init   ¨
-  .survive/server/msg.init   ¶  Ptype.survive/server/gate/internal.Module   È
+  .survive/server/msg.init   ¨
+  2survive/server/login.init   ¶  Ptype.survive/server/gate/internal.Module   È
   "runtime.newobject   Þ 6runtime.writeBarrierEnabled   ò  "".Module   ü
   "".init.1   ˆ "".initdoneÂ·   ¢  "".Module   ¾
   .runtime.writebarrierptr   Ì
-  0runtime.morestack_noctxt          R " X% X% 
- ;u TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   zE:/MyProject/GitHub/survive/src/survive/server/gate/router.go~E:/MyProject/GitHub/survive/src/survive/server/gate/external.goþTgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad              þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þ."".Module  Rtype.*survive/server/gate/internal.Module   þ0"".initdoneÂ·  type.uint8   þ"".init.1Â·f              "".init.1   þ"".initÂ·f              "".init   þ.go.string.hdr."runtime"                       &go.string."runtime"   þ&go.string."runtime"   runtime  þ,go.importpath.runtime.                       &go.string."runtime"   þXgo.string.hdr."survive/server/gate/internal"                       Pgo.string."survive/server/gate/internal"   þPgo.string."survive/server/gate/internal" @  :survive/server/gate/internal  þVgo.importpath.survive/server/gate/internal.                       Pgo.string."survive/server/gate/internal"   þFgo.string.hdr."survive/server/game"                       >go.string."survive/server/game"   þ>go.string."survive/server/game" 0  (survive/server/game  þDgo.importpath.survive/server/game.                       >go.string."survive/server/game"   þDgo.string.hdr."survive/server/msg"                       <go.string."survive/server/msg"   þ<go.string."survive/server/msg" 0  &survive/server/msg  þBgo.importpath.survive/server/msg.                       <go.string."survive/server/msg"   þ"runtime.zerovalue      ÿÿgo13ld 
+  0runtime.morestack_noctxt          R " X% X% 
+ ;u TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   zE:/MyProject/GitHub/survive/src/survive/server/gate/router.go~E:/MyProject/GitHub/survive/src/survive/server/gate/external.goþTgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad              þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           þ."".Module  Rtype.*survive/server/gate/internal.Module   þ0"".initdoneÂ·  type.uint8   þ"".init.1Â·f              "".init.1   þ"".initÂ·f              "".init   þ.go.string.hdr."runtime"                       &go.string."runtime"   þ&go.string."runtime"   runtime  þ,go.importpath.runtime.                       &go.string."runtime"   þXgo.string.hdr."survive/server/gate/internal"                       Pgo.string."survive/server/gate/internal"   þPgo.string."survive/server/gate/internal" @  :survive/server/gate/internal  þVgo.importpath.survive/server/gate/internal.                       Pgo.string."survive/server/gate/internal"   þDgo.string.hdr."survive/server/msg"                       <go.string."survive/server/msg"   þ<go.string."survive/server/msg" 0  &survive/server/msg  þBgo.importpath.survive/server/msg.                       <go.string."survive/server/msg"   þHgo.string.hdr."survive/server/login"                       @go.string."survive/server/login"   þ@go.string."survive/server/login" 0  *survive/server/login  þFgo.importpath.survive/server/login.                       @go.string."survive/server/login"   þ"runtime.zerovalue      ÿÿgo13ld
