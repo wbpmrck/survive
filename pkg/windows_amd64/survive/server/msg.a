@@ -1,12 +1,14 @@
 !<arch>
-__.PKGDEF       0           0     0     644     23888     `
+__.PKGDEF       0           0     0     644     23929     `
 go object windows amd64 go1.5.1 X:none
-build id "6dad5516249650dcc973735720a8264ac00650a5"
+build id "d3e72bf97182b1994d7baa57961f2864b7f7ccfb"
 
 $$
 package msg
 	import runtime "runtime"
 	import json "github.com/name5566/leaf/network/json"
+	import C2S "survive/server/msg/C2S"
+	import common "survive/server/msg/common"
 	import reflect "reflect" // indirect
 	type @"reflect".ChanDir int
 	func (@"reflect".dÂ·2 @"reflect".ChanDir) String () (? string)
@@ -161,7 +163,6 @@ package msg
 	func (@"github.com/name5566/leaf/network/json".pÂ·1 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") SetRouter (@"github.com/name5566/leaf/network/json".msgÂ·2 interface {}, @"github.com/name5566/leaf/network/json".msgRouterÂ·3 *@"github.com/name5566/leaf/chanrpc".Server)
 	func (@"github.com/name5566/leaf/network/json".pÂ·3 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Unmarshal (@"github.com/name5566/leaf/network/json".dataÂ·4 []byte) (? interface {}, ? error)
 	var @"".Processor *@"github.com/name5566/leaf/network/json".Processor
-	type @"".Hello struct { Name string }
 	func @"".init ()
 	type @"reflect".imethod struct { @"reflect".name *string; @"reflect".pkgPath *string; @"reflect".typ *@"reflect".rtype }
 	type @"reflect".interfaceType struct { @"reflect".? @"reflect".rtype "reflect:\"interface\""; @"reflect".methods []@"reflect".imethod }
@@ -172,21 +173,22 @@ package msg
 	func @"reflect".toType (@"reflect".tÂ·2 *@"reflect".rtype "esc:0x12") (? @"reflect".Type) { if @"reflect".tÂ·2 == nil { return nil }; return @"reflect".tÂ·2 }
 
 $$
-_go_.o          0           0     0     644     3972      `
+ _go_.o          0           0     0     644     3653      `
 go object windows amd64 go1.5.1 X:none
 
 !
-  go13ldNgithub.com/name5566/leaf/network/json.a ş"".init.1  à  ŞeH‹%(   H‹‰    H;avRHƒì(H    H‰$è    H‹L$1íH‰)H‰iH‹    H‰$H    H‰D$H‰D$H‰L$ H‰L$è    HƒÄ(Ãè    ë‘      :  type."".Hello   L
-  "runtime.newobject   v  "".Processor   Œ  type.*"".Hello   ¾
-  vgithub.com/name5566/leaf/network/json.(*Processor).Register   Ò
-  0runtime.morestack_noctxt    P  "".autotmp_0000  type.*"".Hello PMOP p I 
- %K TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad   rE:/MyProject/GitHub/survive/src/survive/server/msg/msg.goş"".init  À  ªeH‹%(   H‹‰    H;avuHƒì¶    €û t¶    €ûuHƒÄÃè    Æ    è    è    H‹$€=     uH‰    è    Æ    HƒÄÃH-    H‰,$H‰\$è    ëØè    ékÿÿÿ      :  "".initdoneÂ·   R  "".initdoneÂ·   p
+  go13ldNgithub.com/name5566/leaf/network/json.a0survive/server/msg/C2S.a6survive/server/msg/common.a ş"".init.1  À  ¼eH‹%(   H‹‰    H;a†º   Hƒì(H    H‰$è    H‹L$1íH‰)H‰iH‰iH‰iH‰i H‰i(H‹    H‰$H    H‰D$H‰D$H‰L$ H‰L$è    H    H‰$è    H‹|$H‰ûHƒÿ t;1ÀHƒÇğè    H‹    H‰$H    H‰D$H‰D$H‰\$ H‰\$è    HƒÄ(Ã‰ëÁè    é"ÿÿÿ      B  Btype.survive/server/msg/C2S.Login   T
+  "runtime.newobject     "".Processor   ´  Dtype.*survive/server/msg/C2S.Login   æ
+  vgithub.com/name5566/leaf/network/json.(*Processor).Register   ô  `type.survive/server/msg/common.SimpleResponseMsg   †
+  "runtime.newobject   ¸
+Ü  runtime.duffzero   Æ  "".Processor   Ü  btype.*survive/server/msg/common.SimpleResponseMsg   
+  vgithub.com/name5566/leaf/network/json.(*Processor).Register   ª
+  0runtime.morestack_noctxt    P  "".autotmp_0001  btype.*survive/server/msg/common.SimpleResponseMsg "".autotmp_0000  Dtype.*survive/server/msg/C2S.Login P±OP à YT  )· TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad   |E:/MyProject/GitHub/survive/src/survive/server/msg/register.goş"".init  À  ´eH‹%(   H‹‰    H;avzHƒì¶    €û t¶    €ûuHƒÄÃè    Æ    è    è    è    H‹$€=     uH‰    è    Æ    HƒÄÃH-    H‰,$H‰\$è    ëØè    éfÿÿÿ      :  "".initdoneÂ·   R  "".initdoneÂ·   p
   "runtime.throwinit   € "".initdoneÂ·   Œ
   Tgithub.com/name5566/leaf/network/json.init   –
-  dgithub.com/name5566/leaf/network/json.NewProcessor   ª 6runtime.writeBarrierEnabled   ¾  "".Processor   È
-  "".init.1   Ô "".initdoneÂ·   î  "".Processor   Š
-  .runtime.writebarrierptr   ˜
-  0runtime.morestack_noctxt          < ,   (J 
- 7i TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   rE:/MyProject/GitHub/survive/src/survive/server/msg/msg.goşTgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad              şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           ş."".Processor  jtype.*github.com/name5566/leaf/network/json.Processor   ş0"".initdoneÂ·  type.uint8   ş"".init.1Â·f              "".init.1   ş"".initÂ·f              "".init   ş"runtime.gcbits.01    ş4go.string.hdr."*msg.Hello"             
-          ,go.string."*msg.Hello"   ş,go.string."*msg.Hello"    *msg.Hello  ştype.*"".Hello                    Í€	L 6                                                        0   runtime.algarray   @  "runtime.gcbits.01   P  4go.string.hdr."*msg.Hello"   p  .go.weak.type.**"".Hello   €  "runtime.zerovalue     type."".Hello   ş2go.string.hdr."msg.Hello"             	          *go.string."msg.Hello"   ş*go.string."msg.Hello"    msg.Hello  ş(go.string.hdr."Name"                        go.string."Name"   ş go.string."Name"   
-Name  ş*go.string.hdr."Hello"                       "go.string."Hello"   ş"go.string."Hello"   Hello  şDgo.string.hdr."survive/server/msg"                       <go.string."survive/server/msg"   ş<go.string."survive/server/msg" 0  &survive/server/msg  ş"go.importpath."".                       <go.string."survive/server/msg"   ştype."".Hello  à  à              ?Ğız                                                                                                                                                       0À  runtime.algarray   @  "runtime.gcbits.01   P  2go.string.hdr."msg.Hello"   p  type.*"".Hello   €  "runtime.zerovalue   À type."".Hello   À  (go.string.hdr."Name"   à  type.string   ` type."".Hello     *go.string.hdr."Hello"      "go.importpath."".   °à type."".Hello   ş.go.string.hdr."runtime"                       &go.string."runtime"   ş&go.string."runtime"   runtime  ş,go.importpath.runtime.                       &go.string."runtime"   şjgo.string.hdr."github.com/name5566/leaf/network/json"             %          bgo.string."github.com/name5566/leaf/network/json"   şbgo.string."github.com/name5566/leaf/network/json" P  Lgithub.com/name5566/leaf/network/json  şhgo.importpath.github.com/name5566/leaf/network/json.             %          bgo.string."github.com/name5566/leaf/network/json"   ş"runtime.zerovalue      ÿÿgo13ld
+  <survive/server/msg/common.init    
+  dgithub.com/name5566/leaf/network/json.NewProcessor   ´ 6runtime.writeBarrierEnabled   È  "".Processor   Ò
+  "".init.1   Ş "".initdoneÂ·   ø  "".Processor   ”
+  .runtime.writebarrierptr   ¢
+  0runtime.morestack_noctxt          A '   "O 
+ 7i TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   |E:/MyProject/GitHub/survive/src/survive/server/msg/register.goşTgclocalsÂ·23e8278e2b69a3a75fa59b23c49ed6ad              şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           ş."".Processor  jtype.*github.com/name5566/leaf/network/json.Processor   ş0"".initdoneÂ·  type.uint8   ş"".init.1Â·f              "".init.1   ş"".initÂ·f              "".init   ş.go.string.hdr."runtime"                       &go.string."runtime"   ş&go.string."runtime"   runtime  ş,go.importpath.runtime.                       &go.string."runtime"   şjgo.string.hdr."github.com/name5566/leaf/network/json"             %          bgo.string."github.com/name5566/leaf/network/json"   şbgo.string."github.com/name5566/leaf/network/json" P  Lgithub.com/name5566/leaf/network/json  şhgo.importpath.github.com/name5566/leaf/network/json.             %          bgo.string."github.com/name5566/leaf/network/json"   şLgo.string.hdr."survive/server/msg/C2S"                       Dgo.string."survive/server/msg/C2S"   şDgo.string."survive/server/msg/C2S" 0  .survive/server/msg/C2S  şJgo.importpath.survive/server/msg/C2S.                       Dgo.string."survive/server/msg/C2S"   şRgo.string.hdr."survive/server/msg/common"                       Jgo.string."survive/server/msg/common"   şJgo.string."survive/server/msg/common" @  4survive/server/msg/common  şPgo.importpath.survive/server/msg/common.                       Jgo.string."survive/server/msg/common"   ş"runtime.zerovalue      ÿÿgo13ld 

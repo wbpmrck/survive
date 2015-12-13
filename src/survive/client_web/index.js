@@ -1,5 +1,6 @@
 
-var decoder = new TextDecoder('utf-8')
+var decoder = new TextDecoder('utf-8'),
+    msgSeed=10000;
 function Message(typeName,msg){
     var self = this;//save the this ref
 
@@ -61,7 +62,7 @@ ViewModel.prototype.sendClick = function(){
     var self = this;//save the this ref
 
     var sendText = self.toSend();
-    self.send(ko.toJSON({Hello:{Name:sendText}}));
+    self.send(ko.toJSON({Login:{UserName:sendText,MsgId:(msgSeed++).toString()}}));
     self.addMessage("send",sendText);
 }
 ViewModel.prototype.addMessage = function(typeName,msg){

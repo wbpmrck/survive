@@ -1,16 +1,12 @@
 package internal
 
 import (
-	"reflect"
-"survive/server/msg"
+	"survive/server/msg/C2S"
 	"survive/server/modules/login/internal/handler"
+	"survive/server/utils/register"
 )
 
-func regist(m interface{}, h interface{}) {
-	skeleton.RegisterChanRPC(reflect.TypeOf(m), h)
-}
-
 func init() {
-	regist(&msg.Hello{}, handler.Login) //注册消息处理函数
+	register.RegistMsgHandler(skeleton,&C2S.Login{}, handler.Login) //注册消息处理函数
 }
 

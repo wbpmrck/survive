@@ -1,0 +1,183 @@
+!<arch>
+__.PKGDEF       0           0     0     644     29992     `
+go object windows amd64 go1.5.1 X:none
+build id "84edfb89e2aa4df0a19b6433ba4effad7c91681f"
+
+$$
+package register
+	import runtime "runtime"
+	import module "github.com/name5566/leaf/module"
+	import reflect "reflect"
+	import chanrpc "github.com/name5566/leaf/chanrpc" // indirect
+	type @"github.com/name5566/leaf/chanrpc".RetInfo struct { @"github.com/name5566/leaf/chanrpc".ret interface {}; @"github.com/name5566/leaf/chanrpc".err error; @"github.com/name5566/leaf/chanrpc".cb interface {} }
+	type @"github.com/name5566/leaf/chanrpc".CallInfo struct { @"github.com/name5566/leaf/chanrpc".f interface {}; @"github.com/name5566/leaf/chanrpc".args []interface {}; @"github.com/name5566/leaf/chanrpc".chanRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; @"github.com/name5566/leaf/chanrpc".cb interface {} }
+	type @"github.com/name5566/leaf/chanrpc".Client struct { @"github.com/name5566/leaf/chanrpc".s *@"github.com/name5566/leaf/chanrpc".Server; @"github.com/name5566/leaf/chanrpc".chanSyncRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; ChanAsynRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; @"github.com/name5566/leaf/chanrpc".pendingAsynCall int }
+	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") AsynCall (@"github.com/name5566/leaf/chanrpc".id·2 interface {}, @"github.com/name5566/leaf/chanrpc"._args·3 ...interface {})
+	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") Call0 (@"github.com/name5566/leaf/chanrpc".id·3 interface {}, @"github.com/name5566/leaf/chanrpc".args·4 ...interface {}) (? error)
+	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") Call1 (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".args·5 ...interface {}) (? interface {}, ? error)
+	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") CallN (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".args·5 ...interface {}) (? []interface {}, ? error)
+	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") Cb (@"github.com/name5566/leaf/chanrpc".ri·2 *@"github.com/name5566/leaf/chanrpc".RetInfo "esc:0x9")
+	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") Close ()
+	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") @"github.com/name5566/leaf/chanrpc".asynCall (@"github.com/name5566/leaf/chanrpc".id·3 interface {}, @"github.com/name5566/leaf/chanrpc".args·4 []interface {}, @"github.com/name5566/leaf/chanrpc".cb·5 interface {}, @"github.com/name5566/leaf/chanrpc".n·6 int) (? error)
+	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") @"github.com/name5566/leaf/chanrpc".call (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo, @"github.com/name5566/leaf/chanrpc".block·4 bool) (@"github.com/name5566/leaf/chanrpc".err·1 error)
+	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") @"github.com/name5566/leaf/chanrpc".f (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".n·5 int) (@"github.com/name5566/leaf/chanrpc".f·1 interface {}, @"github.com/name5566/leaf/chanrpc".err·2 error)
+	type @"github.com/name5566/leaf/chanrpc".Server struct { @"github.com/name5566/leaf/chanrpc".functions map[interface {}]interface {}; ChanCall chan *@"github.com/name5566/leaf/chanrpc".CallInfo }
+	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Close ()
+	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Exec (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo "esc:0x9") (@"github.com/name5566/leaf/chanrpc".err·1 error)
+	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Go (@"github.com/name5566/leaf/chanrpc".id·2 interface {} "esc:0x1", @"github.com/name5566/leaf/chanrpc".args·3 ...interface {})
+	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server) Open (@"github.com/name5566/leaf/chanrpc".l·3 int) (? *@"github.com/name5566/leaf/chanrpc".Client) { var @"github.com/name5566/leaf/chanrpc".c·4 *@"github.com/name5566/leaf/chanrpc".Client; ; @"github.com/name5566/leaf/chanrpc".c·4 = new(@"github.com/name5566/leaf/chanrpc".Client); @"github.com/name5566/leaf/chanrpc".c·4.@"github.com/name5566/leaf/chanrpc".s = @"github.com/name5566/leaf/chanrpc".s·2; @"github.com/name5566/leaf/chanrpc".c·4.@"github.com/name5566/leaf/chanrpc".chanSyncRet = make(chan *@"github.com/name5566/leaf/chanrpc".RetInfo, 0x1); @"github.com/name5566/leaf/chanrpc".c·4.ChanAsynRet = make(chan *@"github.com/name5566/leaf/chanrpc".RetInfo, @"github.com/name5566/leaf/chanrpc".l·3); return @"github.com/name5566/leaf/chanrpc".c·4 }
+	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Register (@"github.com/name5566/leaf/chanrpc".id·2 interface {}, @"github.com/name5566/leaf/chanrpc".f·3 interface {})
+	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") @"github.com/name5566/leaf/chanrpc".ret (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo "esc:0x9", @"github.com/name5566/leaf/chanrpc".ri·4 *@"github.com/name5566/leaf/chanrpc".RetInfo) (@"github.com/name5566/leaf/chanrpc".err·1 error)
+	import g "github.com/name5566/leaf/go" // indirect
+	import list "container/list" // indirect
+	type @"container/list".Element struct { @"container/list".next *@"container/list".Element; @"container/list".prev *@"container/list".Element; @"container/list".list *@"container/list".List; Value interface {} }
+	func (@"container/list".e·2 *@"container/list".Element "esc:0x22") Next () (? *@"container/list".Element) { var @"container/list".p·3 *@"container/list".Element; ; @"container/list".p·3 = @"container/list".e·2.@"container/list".next; if @"container/list".e·2.@"container/list".list != nil && @"container/list".p·3 != &@"container/list".e·2.@"container/list".list.@"container/list".root { return @"container/list".p·3 }; return nil }
+	func (@"container/list".e·2 *@"container/list".Element "esc:0x22") Prev () (? *@"container/list".Element) { var @"container/list".p·3 *@"container/list".Element; ; @"container/list".p·3 = @"container/list".e·2.@"container/list".prev; if @"container/list".e·2.@"container/list".list != nil && @"container/list".p·3 != &@"container/list".e·2.@"container/list".list.@"container/list".root { return @"container/list".p·3 }; return nil }
+	type @"container/list".List struct { @"container/list".root @"container/list".Element; @"container/list".len int }
+	func (@"container/list".l·2 *@"container/list".List "esc:0x22") Back () (? *@"container/list".Element) { if @"container/list".l·2.@"container/list".len == 0x0 { return nil }; return @"container/list".l·2.@"container/list".root.@"container/list".prev }
+	func (@"container/list".l·2 *@"container/list".List "esc:0x22") Front () (? *@"container/list".Element) { if @"container/list".l·2.@"container/list".len == 0x0 { return nil }; return @"container/list".l·2.@"container/list".root.@"container/list".next }
+	func (@"container/list".l·2 *@"container/list".List) Init () (? *@"container/list".List) { @"container/list".l·2.@"container/list".root.@"container/list".next = &@"container/list".l·2.@"container/list".root; @"container/list".l·2.@"container/list".root.@"container/list".prev = &@"container/list".l·2.@"container/list".root; @"container/list".l·2.@"container/list".len = 0x0; return @"container/list".l·2 }
+	func (@"container/list".l·2 *@"container/list".List) InsertAfter (@"container/list".v·3 interface {}, @"container/list".mark·4 *@"container/list".Element) (? *@"container/list".Element) { if @"container/list".mark·4.@"container/list".list != @"container/list".l·2 { return nil }; return @"container/list".l·2.@"container/list".insertValue(@"container/list".v·3, @"container/list".mark·4) }
+	func (@"container/list".l·2 *@"container/list".List) InsertBefore (@"container/list".v·3 interface {}, @"container/list".mark·4 *@"container/list".Element "esc:0x9") (? *@"container/list".Element) { if @"container/list".mark·4.@"container/list".list != @"container/list".l·2 { return nil }; return @"container/list".l·2.@"container/list".insertValue(@"container/list".v·3, @"container/list".mark·4.@"container/list".prev) }
+	func (@"container/list".l·2 *@"container/list".List "esc:0x1") Len () (? int) { return @"container/list".l·2.@"container/list".len }
+	func (@"container/list".l·1 *@"container/list".List) MoveAfter (@"container/list".e·2 *@"container/list".Element, @"container/list".mark·3 *@"container/list".Element)
+	func (@"container/list".l·1 *@"container/list".List) MoveBefore (@"container/list".e·2 *@"container/list".Element, @"container/list".mark·3 *@"container/list".Element "esc:0x9")
+	func (@"container/list".l·1 *@"container/list".List) MoveToBack (@"container/list".e·2 *@"container/list".Element)
+	func (@"container/list".l·1 *@"container/list".List) MoveToFront (@"container/list".e·2 *@"container/list".Element)
+	func (@"container/list".l·2 *@"container/list".List) PushBack (@"container/list".v·3 interface {}) (? *@"container/list".Element)
+	func (@"container/list".l·1 *@"container/list".List) PushBackList (@"container/list".other·2 *@"container/list".List "esc:0x9")
+	func (@"container/list".l·2 *@"container/list".List) PushFront (@"container/list".v·3 interface {}) (? *@"container/list".Element)
+	func (@"container/list".l·1 *@"container/list".List) PushFrontList (@"container/list".other·2 *@"container/list".List "esc:0x9")
+	func (@"container/list".l·2 *@"container/list".List "esc:0x1") Remove (@"container/list".e·3 *@"container/list".Element "esc:0x2a") (? interface {}) { if @"container/list".e·3.@"container/list".list == @"container/list".l·2 { @"container/list".l·2.@"container/list".remove(@"container/list".e·3) }; return @"container/list".e·3.Value }
+	func (@"container/list".l·2 *@"container/list".List) @"container/list".insert (@"container/list".e·3 *@"container/list".Element, @"container/list".at·4 *@"container/list".Element) (? *@"container/list".Element) { var @"container/list".n·5 *@"container/list".Element; ; @"container/list".n·5 = @"container/list".at·4.@"container/list".next; @"container/list".at·4.@"container/list".next = @"container/list".e·3; @"container/list".e·3.@"container/list".prev = @"container/list".at·4; @"container/list".e·3.@"container/list".next = @"container/list".n·5; @"container/list".n·5.@"container/list".prev = @"container/list".e·3; @"container/list".e·3.@"container/list".list = @"container/list".l·2; @"container/list".l·2.@"container/list".len++; return @"container/list".e·3 }
+	func (@"container/list".l·2 *@"container/list".List) @"container/list".insertValue (@"container/list".v·3 interface {}, @"container/list".at·4 *@"container/list".Element) (? *@"container/list".Element) { return @"container/list".l·2.@"container/list".insert((&@"container/list".Element{ Value:@"container/list".v·3 }), @"container/list".at·4) }
+	func (@"container/list".l·1 *@"container/list".List) @"container/list".lazyInit () { if @"container/list".l·1.@"container/list".root.@"container/list".next == nil { @"container/list".l·1.Init() } }
+	func (@"container/list".l·2 *@"container/list".List "esc:0x1") @"container/list".remove (@"container/list".e·3 *@"container/list".Element "esc:0x1a") (? *@"container/list".Element) { @"container/list".e·3.@"container/list".prev.@"container/list".next = @"container/list".e·3.@"container/list".next; @"container/list".e·3.@"container/list".next.@"container/list".prev = @"container/list".e·3.@"container/list".prev; @"container/list".e·3.@"container/list".next = nil; @"container/list".e·3.@"container/list".prev = nil; @"container/list".e·3.@"container/list".list = nil; @"container/list".l·2.@"container/list".len--; return @"container/list".e·3 }
+	import sync "sync" // indirect
+	type @"sync".Mutex struct { @"sync".state int32; @"sync".sema uint32 }
+	func (@"sync".m·1 *@"sync".Mutex) Lock ()
+	func (@"sync".m·1 *@"sync".Mutex) Unlock ()
+	type @"github.com/name5566/leaf/go".LinearContext struct { @"github.com/name5566/leaf/go".g *@"github.com/name5566/leaf/go".Go; @"github.com/name5566/leaf/go".linearGo *@"container/list".List; @"github.com/name5566/leaf/go".mutexLinearGo @"sync".Mutex; @"github.com/name5566/leaf/go".mutexExecution @"sync".Mutex }
+	func (@"github.com/name5566/leaf/go".c·1 *@"github.com/name5566/leaf/go".LinearContext) Go (@"github.com/name5566/leaf/go".f·2 func(), @"github.com/name5566/leaf/go".cb·3 func())
+	type @"github.com/name5566/leaf/go".Go struct { ChanCb chan func(); @"github.com/name5566/leaf/go".pendingGo int }
+	func (@"github.com/name5566/leaf/go".g·1 *@"github.com/name5566/leaf/go".Go "esc:0x1") Cb (@"github.com/name5566/leaf/go".cb·2 func() "esc:0x1")
+	func (@"github.com/name5566/leaf/go".g·1 *@"github.com/name5566/leaf/go".Go "esc:0x1") Close ()
+	func (@"github.com/name5566/leaf/go".g·1 *@"github.com/name5566/leaf/go".Go) Go (@"github.com/name5566/leaf/go".f·2 func(), @"github.com/name5566/leaf/go".cb·3 func())
+	func (@"github.com/name5566/leaf/go".g·2 *@"github.com/name5566/leaf/go".Go) NewLinearContext () (? *@"github.com/name5566/leaf/go".LinearContext) { var @"github.com/name5566/leaf/go".c·3 *@"github.com/name5566/leaf/go".LinearContext; ; @"github.com/name5566/leaf/go".c·3 = new(@"github.com/name5566/leaf/go".LinearContext); @"github.com/name5566/leaf/go".c·3.@"github.com/name5566/leaf/go".g = @"github.com/name5566/leaf/go".g·2; @"github.com/name5566/leaf/go".c·3.@"github.com/name5566/leaf/go".linearGo = @"container/list".New(); return @"github.com/name5566/leaf/go".c·3 }
+	import timer "github.com/name5566/leaf/timer" // indirect
+	import time "time" // indirect
+	type @"time".zone struct { @"time".name string; @"time".offset int; @"time".isDST bool }
+	type @"time".zoneTrans struct { @"time".when int64; @"time".index uint8; @"time".isstd bool; @"time".isutc bool }
+	type @"time".Location struct { @"time".name string; @"time".zone []@"time".zone; @"time".tx []@"time".zoneTrans; @"time".cacheStart int64; @"time".cacheEnd int64; @"time".cacheZone *@"time".zone }
+	func (@"time".l·2 *@"time".Location "esc:0x22") String () (? string)
+	func (@"time".l·2 *@"time".Location "esc:0x1") @"time".firstZoneUsed () (? bool)
+	func (@"time".l·2 *@"time".Location "esc:0x12") @"time".get () (? *@"time".Location)
+	func (@"time".l·6 *@"time".Location "esc:0x32") @"time".lookup (@"time".sec·7 int64) (@"time".name·1 string, @"time".offset·2 int, @"time".isDST·3 bool, @"time".start·4 int64, @"time".end·5 int64)
+	func (@"time".l·2 *@"time".Location "esc:0x1") @"time".lookupFirstZone () (? int)
+	func (@"time".l·4 *@"time".Location "esc:0x1") @"time".lookupName (@"time".name·5 string "esc:0x1", @"time".unix·6 int64) (@"time".offset·1 int, @"time".isDST·2 bool, @"time".ok·3 bool)
+	type @"time".Duration int64
+	func (@"time".d·2 @"time".Duration) Hours () (? float64) { var @"time".hour·3 @"time".Duration; ; @"time".hour·3 = @"time".d·2 / @"time".Duration(0x34630b8a000); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0x34630b8a000); return float64(@"time".hour·3) + float64(@"time".nsec·4) * 8190022623310637111963488201822504381538623676021880892417778544696899264837610290203272971060556344039023584360473938041055625214280336402169897364226048p-553 }
+	func (@"time".d·2 @"time".Duration) Minutes () (? float64) { var @"time".min·3 @"time".Duration; ; @"time".min·3 = @"time".d·2 / @"time".Duration(0xdf8475800); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0xdf8475800); return float64(@"time".min·3) + float64(@"time".nsec·4) * 7678146209353722106395056769533233877065564876941352542109479049699919628723768656821910653339403201031675627614471533358284117434246264392176261853609984p-547 }
+	func (@"time".d·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".d·2) }
+	func (@"time".d·2 @"time".Duration) Seconds () (? float64) { var @"time".sec·3 @"time".Duration; ; @"time".sec·3 = @"time".d·2 / @"time".Duration(0x3b9aca00); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0x3b9aca00); return float64(@"time".sec·3) + float64(@"time".nsec·4) * 7198262071269114660816079141112770740375861891461678802759824945047098083990024106014198994535558872472104883612039846078596891298747423852523262413111296p-541 }
+	func (@"time".d·2 @"time".Duration) String () (? string)
+	type @"time".Month int
+	func (@"time".m·2 @"time".Month) String () (? string) { return @"time".months[@"time".m·2 - @"time".Month(0x1)] }
+	type @"time".Weekday int
+	func (@"time".d·2 @"time".Weekday) String () (? string) { return @"time".days[@"time".d·2] }
+	type @"time".Time struct { @"time".sec int64; @"time".nsec int32; @"time".loc *@"time".Location }
+	func (@"time".t·2 @"time".Time "esc:0x12") Add (@"time".d·3 @"time".Duration) (? @"time".Time) { @"time".t·2.@"time".sec += int64(@"time".d·3 / @"time".Duration(0x3b9aca00)); var @"time".nsec·4 int32; ; @"time".nsec·4 = int32(@"time".t·2.@"time".nsec) + int32(@"time".d·3 % @"time".Duration(0x3b9aca00)); if @"time".nsec·4 >= 0x3b9aca00 { @"time".t·2.@"time".sec++; @"time".nsec·4 -= 0x3b9aca00 } else { if @"time".nsec·4 < 0x0 { @"time".t·2.@"time".sec--; @"time".nsec·4 += 0x3b9aca00 } }; @"time".t·2.@"time".nsec = @"time".nsec·4; return @"time".t·2 }
+	func (@"time".t·2 @"time".Time "esc:0x12") AddDate (@"time".years·3 int, @"time".months·4 int, @"time".days·5 int) (? @"time".Time)
+	func (@"time".t·2 @"time".Time "esc:0x1") After (@"time".u·3 @"time".Time "esc:0x1") (? bool) { return @"time".t·2.@"time".sec > @"time".u·3.@"time".sec || @"time".t·2.@"time".sec == @"time".u·3.@"time".sec && @"time".t·2.@"time".nsec > @"time".u·3.@"time".nsec }
+	func (@"time".t·2 @"time".Time "esc:0x9") AppendFormat (@"time".b·3 []byte "esc:0x1a", @"time".layout·4 string "esc:0x9") (? []byte)
+	func (@"time".t·2 @"time".Time "esc:0x1") Before (@"time".u·3 @"time".Time "esc:0x1") (? bool) { return @"time".t·2.@"time".sec < @"time".u·3.@"time".sec || @"time".t·2.@"time".sec == @"time".u·3.@"time".sec && @"time".t·2.@"time".nsec < @"time".u·3.@"time".nsec }
+	func (@"time".t·4 @"time".Time "esc:0x1") Clock () (@"time".hour·1 int, @"time".min·2 int, @"time".sec·3 int)
+	func (@"time".t·4 @"time".Time "esc:0x1") Date () (@"time".year·1 int, @"time".month·2 @"time".Month, @"time".day·3 int)
+	func (@"time".t·2 @"time".Time "esc:0x1") Day () (? int)
+	func (@"time".t·2 @"time".Time "esc:0x1") Equal (@"time".u·3 @"time".Time "esc:0x1") (? bool) { return @"time".t·2.@"time".sec == @"time".u·3.@"time".sec && @"time".t·2.@"time".nsec == @"time".u·3.@"time".nsec }
+	func (@"time".t·2 @"time".Time "esc:0x9") Format (@"time".layout·3 string "esc:0x9") (? string)
+	func (@"time".t·2 *@"time".Time "esc:0x1") GobDecode (@"time".data·3 []byte "esc:0x1") (? error)
+	func (@"time".t·3 @"time".Time "esc:0x1") GobEncode () (? []byte, ? error)
+	func (@"time".t·2 @"time".Time "esc:0x1") Hour () (? int)
+	func (@"time".t·3 @"time".Time "esc:0x1") ISOWeek () (@"time".year·1 int, @"time".week·2 int)
+	func (@"time".t·2 @"time".Time "esc:0x12") In (@"time".loc·3 *@"time".Location "esc:0x12") (? @"time".Time)
+	func (@"time".t·2 @"time".Time "esc:0x1") IsZero () (? bool) { return @"time".t·2.@"time".sec == 0x0 && @"time".t·2.@"time".nsec == 0x0 }
+	func (@"time".t·2 @"time".Time "esc:0x12") Local () (? @"time".Time) { @"time".t·2.@"time".loc = @"time".Local; return @"time".t·2 }
+	func (@"time".t·2 @"time".Time "esc:0x12") Location () (? *@"time".Location) { var @"time".l·3 *@"time".Location; ; @"time".l·3 = @"time".t·2.@"time".loc; if @"time".l·3 == nil { @"time".l·3 = @"time".UTC }; return @"time".l·3 }
+	func (@"time".t·3 @"time".Time "esc:0x1") MarshalBinary () (? []byte, ? error)
+	func (@"time".t·3 @"time".Time "esc:0x9") MarshalJSON () (? []byte, ? error)
+	func (@"time".t·3 @"time".Time "esc:0x9") MarshalText () (? []byte, ? error)
+	func (@"time".t·2 @"time".Time "esc:0x1") Minute () (? int)
+	func (@"time".t·2 @"time".Time "esc:0x1") Month () (? @"time".Month)
+	func (@"time".t·2 @"time".Time "esc:0x1") Nanosecond () (? int) { return int(@"time".t·2.@"time".nsec) }
+	func (@"time".t·2 @"time".Time "esc:0x12") Round (@"time".d·3 @"time".Duration) (? @"time".Time)
+	func (@"time".t·2 @"time".Time "esc:0x1") Second () (? int)
+	func (@"time".t·2 @"time".Time "esc:0x9") String () (? string)
+	func (@"time".t·2 @"time".Time "esc:0x1") Sub (@"time".u·3 @"time".Time "esc:0x1") (? @"time".Duration)
+	func (@"time".t·2 @"time".Time "esc:0x12") Truncate (@"time".d·3 @"time".Duration) (? @"time".Time)
+	func (@"time".t·2 @"time".Time "esc:0x12") UTC () (? @"time".Time) { @"time".t·2.@"time".loc = @"time".UTC; return @"time".t·2 }
+	func (@"time".t·2 @"time".Time "esc:0x1") Unix () (? int64) { return @"time".t·2.@"time".sec + -0xe7791f700 }
+	func (@"time".t·2 @"time".Time "esc:0x1") UnixNano () (? int64) { return (@"time".t·2.@"time".sec + -0xe7791f700) * 0x3b9aca00 + int64(@"time".t·2.@"time".nsec) }
+	func (@"time".t·2 *@"time".Time "esc:0x1") UnmarshalBinary (@"time".data·3 []byte "esc:0x1") (? error)
+	func (@"time".t·2 *@"time".Time "esc:0x1") UnmarshalJSON (@"time".data·3 []byte "esc:0x1") (@"time".err·1 error)
+	func (@"time".t·2 *@"time".Time "esc:0x1") UnmarshalText (@"time".data·3 []byte "esc:0x1") (@"time".err·1 error)
+	func (@"time".t·2 @"time".Time "esc:0x1") Weekday () (? @"time".Weekday)
+	func (@"time".t·2 @"time".Time "esc:0x1") Year () (? int)
+	func (@"time".t·2 @"time".Time "esc:0x1") YearDay () (? int)
+	func (@"time".t·3 @"time".Time "esc:0x32") Zone () (@"time".name·1 string, @"time".offset·2 int)
+	func (@"time".t·2 @"time".Time "esc:0x1") @"time".abs () (? uint64)
+	func (@"time".t·5 @"time".Time "esc:0x1") @"time".date (@"time".full·6 bool) (@"time".year·1 int, @"time".month·2 @"time".Month, @"time".day·3 int, @"time".yday·4 int)
+	func (@"time".t·4 @"time".Time "esc:0x32") @"time".locabs () (@"time".name·1 string, @"time".offset·2 int, @"time".abs·3 uint64)
+	type @"time".runtimeTimer struct { @"time".i int; @"time".when int64; @"time".period int64; @"time".f func(? interface {}, ? uintptr); @"time".arg interface {}; @"time".seq uintptr }
+	type @"time".Timer struct { C <-chan @"time".Time; @"time".r @"time".runtimeTimer }
+	func (@"time".t·2 *@"time".Timer) Reset (@"time".d·3 @"time".Duration) (? bool)
+	func (@"time".t·2 *@"time".Timer) Stop () (? bool)
+	type @"github.com/name5566/leaf/timer".Timer struct { @"github.com/name5566/leaf/timer".t *@"time".Timer; @"github.com/name5566/leaf/timer".cb func() }
+	func (@"github.com/name5566/leaf/timer".t·1 *@"github.com/name5566/leaf/timer".Timer "esc:0x1") Cb ()
+	func (@"github.com/name5566/leaf/timer".t·1 *@"github.com/name5566/leaf/timer".Timer "esc:0x9") Stop ()
+	type @"github.com/name5566/leaf/timer".Cron struct { @"github.com/name5566/leaf/timer".t *@"github.com/name5566/leaf/timer".Timer }
+	func (@"github.com/name5566/leaf/timer".c·1 *@"github.com/name5566/leaf/timer".Cron "esc:0x9") Stop ()
+	type @"github.com/name5566/leaf/timer".Dispatcher struct { ChanTimer chan *@"github.com/name5566/leaf/timer".Timer }
+	func (@"github.com/name5566/leaf/timer".disp·2 *@"github.com/name5566/leaf/timer".Dispatcher) AfterFunc (@"github.com/name5566/leaf/timer".d·3 @"time".Duration, @"github.com/name5566/leaf/timer".cb·4 func()) (? *@"github.com/name5566/leaf/timer".Timer)
+	func (@"github.com/name5566/leaf/timer".disp·3 *@"github.com/name5566/leaf/timer".Dispatcher) CronFunc (@"github.com/name5566/leaf/timer".expr·4 string, @"github.com/name5566/leaf/timer"._cb·5 func()) (? *@"github.com/name5566/leaf/timer".Cron, ? error)
+	type @"github.com/name5566/leaf/module".Skeleton struct { GoLen int; TimerDispatcherLen int; ChanRPCServer *@"github.com/name5566/leaf/chanrpc".Server; @"github.com/name5566/leaf/module".g *@"github.com/name5566/leaf/go".Go; @"github.com/name5566/leaf/module".dispatcher *@"github.com/name5566/leaf/timer".Dispatcher; @"github.com/name5566/leaf/module".server *@"github.com/name5566/leaf/chanrpc".Server; @"github.com/name5566/leaf/module".commandServer *@"github.com/name5566/leaf/chanrpc".Server }
+	func (@"github.com/name5566/leaf/module".s·2 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") AfterFunc (@"github.com/name5566/leaf/module".d·3 @"time".Duration, @"github.com/name5566/leaf/module".cb·4 func()) (? *@"github.com/name5566/leaf/timer".Timer)
+	func (@"github.com/name5566/leaf/module".s·3 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") CronFunc (@"github.com/name5566/leaf/module".expr·4 string, @"github.com/name5566/leaf/module".cb·5 func()) (? *@"github.com/name5566/leaf/timer".Cron, ? error)
+	func (@"github.com/name5566/leaf/module".s·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") Go (@"github.com/name5566/leaf/module".f·2 func(), @"github.com/name5566/leaf/module".cb·3 func())
+	func (@"github.com/name5566/leaf/module".s·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") Init () { if @"github.com/name5566/leaf/module".s·1.GoLen <= 0x0 { @"github.com/name5566/leaf/module".s·1.GoLen = 0x0 }; if @"github.com/name5566/leaf/module".s·1.TimerDispatcherLen <= 0x0 { @"github.com/name5566/leaf/module".s·1.TimerDispatcherLen = 0x0 }; @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".g = @"github.com/name5566/leaf/go".New(@"github.com/name5566/leaf/module".s·1.GoLen); @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".dispatcher = @"github.com/name5566/leaf/timer".NewDispatcher(@"github.com/name5566/leaf/module".s·1.TimerDispatcherLen); @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".server = @"github.com/name5566/leaf/module".s·1.ChanRPCServer; if @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".server == nil { @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".server = @"github.com/name5566/leaf/chanrpc".NewServer(0x0) }; @"github.com/name5566/leaf/module".s·1.@"github.com/name5566/leaf/module".commandServer = @"github.com/name5566/leaf/chanrpc".NewServer(0x0) }
+	func (@"github.com/name5566/leaf/module".s·2 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") NewLinearContext () (? *@"github.com/name5566/leaf/go".LinearContext)
+	func (@"github.com/name5566/leaf/module".s·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x1") RegisterChanRPC (@"github.com/name5566/leaf/module".id·2 interface {}, @"github.com/name5566/leaf/module".f·3 interface {})
+	func (@"github.com/name5566/leaf/module".s·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x9") RegisterCommand (@"github.com/name5566/leaf/module".name·2 string, @"github.com/name5566/leaf/module".help·3 string, @"github.com/name5566/leaf/module".f·4 interface {})
+	func (@"github.com/name5566/leaf/module".s·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x1") Run (@"github.com/name5566/leaf/module".closeSig·2 chan bool "esc:0x1")
+	func @"".RegistStringHandler (@"".skeleton·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x1", @"".name·2 string, @"".handler·3 interface {})
+	func @"".RegistMsgHandler (@"".skeleton·1 *@"github.com/name5566/leaf/module".Skeleton "esc:0x1", @"".msg·2 interface {}, @"".handler·3 interface {})
+	func @"".init ()
+	func @"container/list".New () (? *@"container/list".List) { return new(@"container/list".List).Init() }
+	var @"time".months [12]string
+	var @"time".days [7]string
+	var @"time".Local *@"time".Location
+	var @"time".UTC *@"time".Location
+	func @"github.com/name5566/leaf/go".New (@"github.com/name5566/leaf/go".l·2 int) (? *@"github.com/name5566/leaf/go".Go) { var @"github.com/name5566/leaf/go".g·3 *@"github.com/name5566/leaf/go".Go; ; @"github.com/name5566/leaf/go".g·3 = new(@"github.com/name5566/leaf/go".Go); @"github.com/name5566/leaf/go".g·3.ChanCb = make(chan func(), @"github.com/name5566/leaf/go".l·2); return @"github.com/name5566/leaf/go".g·3 }
+	func @"github.com/name5566/leaf/timer".NewDispatcher (@"github.com/name5566/leaf/timer".l·2 int) (? *@"github.com/name5566/leaf/timer".Dispatcher) { var @"github.com/name5566/leaf/timer".disp·3 *@"github.com/name5566/leaf/timer".Dispatcher; ; @"github.com/name5566/leaf/timer".disp·3 = new(@"github.com/name5566/leaf/timer".Dispatcher); @"github.com/name5566/leaf/timer".disp·3.ChanTimer = make(chan *@"github.com/name5566/leaf/timer".Timer, @"github.com/name5566/leaf/timer".l·2); return @"github.com/name5566/leaf/timer".disp·3 }
+	func @"github.com/name5566/leaf/chanrpc".NewServer (@"github.com/name5566/leaf/chanrpc".l·2 int) (? *@"github.com/name5566/leaf/chanrpc".Server) { var @"github.com/name5566/leaf/chanrpc".s·3 *@"github.com/name5566/leaf/chanrpc".Server; ; @"github.com/name5566/leaf/chanrpc".s·3 = new(@"github.com/name5566/leaf/chanrpc".Server); @"github.com/name5566/leaf/chanrpc".s·3.@"github.com/name5566/leaf/chanrpc".functions = make(map[interface {}]interface {}); @"github.com/name5566/leaf/chanrpc".s·3.ChanCall = make(chan *@"github.com/name5566/leaf/chanrpc".CallInfo, @"github.com/name5566/leaf/chanrpc".l·2); return @"github.com/name5566/leaf/chanrpc".s·3 }
+
+$$
+_go_.o          0           0     0     644     4503      `
+go object windows amd64 go1.5.1 X:none
+
+!
+  go13ldBgithub.com/name5566/leaf/module.areflect.a �,"".RegistStringHandler  �  �eH�%(   H��    H;avzH��8H�\$HH�\$(H�\$PH�\$0H�    H�$H�\$(H�\$H�D$    �    H�\$H�|$H�H�H�KH�OH�\$@H�$H�\$XH�\$H�\$`H�\$ �    H��8��    �f���
+      b  type.string   �
+  runtime.convT2E   �
+  vgithub.com/name5566/leaf/module.(*Skeleton).RegisterChanRPC   �
+  0runtime.morestack_noctxt   Pp  "".autotmp_0000 type.string "".handler 0"type.interface {} "".name type.string "".skeleton  \type.*github.com/name5566/leaf/module.Skeleton puop � q 
+ LT Tgclocals·d7aae96a654be3b34644b4897f912352 Tgclocals·d8fdd2a55187867c76648dc792366181   �E:/MyProject/GitHub/survive/src/survive/server/utils/register/handlerRegist.go�&"".RegistMsgHandler  �  �eH�%(   H��    H;a�7  H��   H��$�   H�\$PH��$�   H�\$X1�H�\$0H�\$81�H�\$PH�� ��   H�H�kH�l$hH�D$`1�H�\$@H�\$H1�H9�u|1�H��H�T$@H�D$HH�T$pH�D$xH�T$0H�$H�D$8H�D$�    H�\$H�|$H�H�H�KH�OH��$�   H�$H��$�   H�\$H��$�   H�\$ �    H�Ā   �H�D$(H�    1�H9�tH�L$(H��H���f���H�    H�$H�    H�\$H�    H�\$�    H�D$��������    ����      �
+  runtime.convI2E   �
+  vgithub.com/name5566/leaf/module.(*Skeleton).RegisterChanRPC   �  Fgo.itab.*reflect.rtype.reflect.Type   �  &type.*reflect.rtype   �  "type.reflect.Type   �  Fgo.itab.*reflect.rtype.reflect.Type   �
+   runtime.typ2Itab   �
+  0runtime.morestack_noctxt   P�  "".autotmp_0004  "type.reflect.Type "".autotmp_0002 "type.reflect.Type "".autotmp_0001 �&type.*reflect.rtype "".~r0 "type.reflect.Type "".~r0 �"type.reflect.Type  reflect.eface·3 ?6type.reflect.emptyInterface reflect.i·2 _"type.interface {} "".handler 0"type.interface {} "".msg "type.interface {} "".skeleton  \type.*github.com/name5566/leaf/module.Skeleton !����h � !�Y  ��" Tgclocals·4d84441e6446d0c526b8772c60d1f6a9 Tgclocals·d132ae6301586a97aff40ab2e861e138   �E:/MyProject/GitHub/survive/src/survive/server/utils/register/handlerRegist.go�"".init  �  �eH�%(   H��    H;av9�    �� t�    ��u��    �    �    �    �    ��    �      2  "".initdone·   J  "".initdone·   `
+  "runtime.throwinit   p "".initdone·   |
+  Hgithub.com/name5566/leaf/module.init   �
+  reflect.init   � "".initdone·   �
+  0runtime.morestack_noctxt        ` `  ` 
+ /1 Tgclocals·33cdeccccebe80329f1fdbee7f5874cb Tgclocals·33cdeccccebe80329f1fdbee7f5874cb   �E:/MyProject/GitHub/survive/src/survive/server/utils/register/handlerRegist.go�Tgclocals·d8fdd2a55187867c76648dc792366181                   �Tgclocals·d7aae96a654be3b34644b4897f912352                  �0Fgo.itab.*reflect.rtype.reflect.Type     �Tgclocals·d132ae6301586a97aff40ab2e861e138 (  (          a   `    �Tgclocals·4d84441e6446d0c526b8772c60d1f6a9 (  (                �Tgclocals·33cdeccccebe80329f1fdbee7f5874cb           �Tgclocals·33cdeccccebe80329f1fdbee7f5874cb           �0"".initdone·  type.uint8   �2"".RegistStringHandler·f              ,"".RegistStringHandler   �,"".RegistMsgHandler·f              &"".RegistMsgHandler   �"".init·f              "".init   �"runtime.gcbits.03    �8go.string.hdr."interface {}"                       0go.string."interface {}"   �0go.string."interface {}"    interface {}  �"type.interface {} �  �              �W�                                                                         0�  runtime.algarray   @  "runtime.gcbits.03   P  8go.string.hdr."interface {}"   p  4go.weak.type.*interface {}   �  "runtime.zerovalue   �� "type.interface {}   �.go.string.hdr."runtime"                       &go.string."runtime"   �&go.string."runtime"   runtime  �,go.importpath.runtime.                       &go.string."runtime"   �^go.string.hdr."github.com/name5566/leaf/module"                       Vgo.string."github.com/name5566/leaf/module"   �Vgo.string."github.com/name5566/leaf/module" @  @github.com/name5566/leaf/module  �\go.importpath.github.com/name5566/leaf/module.                       Vgo.string."github.com/name5566/leaf/module"   �.go.string.hdr."reflect"                       &go.string."reflect"   �&go.string."reflect"   reflect  �,go.importpath.reflect.                       &go.string."reflect"   �"runtime.zerovalue      ��go13ld 

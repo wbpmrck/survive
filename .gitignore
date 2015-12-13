@@ -1,4 +1,5 @@
 .idea
+bin
 node_modules
 junit-report
 coverage

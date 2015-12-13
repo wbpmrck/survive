@@ -1,7 +1,7 @@
 !<arch>
 __.PKGDEF       0           0     0     644     30418     `
 go object windows amd64 go1.5.1 X:none
-build id "1860a34c2f0a431348c4ef306774c5b7f7b37034"
+build id "3c9d6a43d81ca6c24ca949c2d61cf65f7329ea14"
 
 $$
 package game
