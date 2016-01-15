@@ -1,23 +1,23 @@
 package bases
 import (
 	"survive/server/logic/character"
-	"time"
+	"survive/server/logic/dataStructure"
 )
 
 type EffectBase struct {
 	//效果的使用者，和受众
 	From, Target *character.Character
-	PutOnTime time.Time //效果生效时间
-	RemoveTime time.Time //效果结束时间
+	PutOnTime *dataStructure.Time//效果生效时间
+	RemoveTime *dataStructure.Time //效果结束时间
 }
-func(self *EffectBase) PutOn(from, target *character.Character){
-	self.PutOnTime = time.Now()
+func(self *EffectBase) PutOn(time *dataStructure.Time,from, target *character.Character){
+	self.PutOnTime = time
 	self.From = from
 	self.Target = target
 }
 //效果移除
-func(self *EffectBase) Remove(){
-	self.RemoveTime = time.Now()
+func(self *EffectBase) Remove(time *dataStructure.Time,){
+	self.RemoveTime = time
 	self.From = nil
 	self.Target = nil
 }

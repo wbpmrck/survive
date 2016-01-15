@@ -5,6 +5,7 @@ import (
 	"survive/server/logic/skill/effect"
 	"fmt"
 	"time"
+	"survive/server/logic/dataStructure"
 )
 
 //表示对属性进行修正（按数值修正）的一种效果
@@ -17,24 +18,19 @@ type AttributeModify struct {
 }
 
 //效果施加
-func(self *AttributeModify) PutOn(from, target *character.Character){
-	self.EffectBase.PutOn(from,target)
+func(self *AttributeModify) PutOn(time *dataStructure.Time,from, target *character.Character){
+	self.EffectBase.PutOn(time,from,target)
 	//增加属性
-	self.Target.Attributes[self.attrKey].Val.ChangeAddition(self.amount)
+	self.Target.Attributes[self.attrKey].GetValue.Add(self.amount)
 }
 
-//效果更新
-//todo:思考何时调用Update,思考是否要传入固定的参数，比如当前阶段(判断攻击命中，判定技能命中等)
-func(self *AttributeModify) Update(args ...interface{}){
-
-}
 
 //效果移除
-func(self *AttributeModify) Remove(){
+func(self *AttributeModify) Remove(time *dataStructure.Time){
 	//减少属性
-	self.Target.Attributes[self.attrKey].Val.ChangeAddition(-self.amount)
+	self.Target.Attributes[self.attrKey].GetValue().Add(-self.amount)
 
-	self.EffectBase.Remove()
+	self.EffectBase.Remove(time)
 }
 
 //配置修正值

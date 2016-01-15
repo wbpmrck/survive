@@ -1,6 +1,7 @@
 package effect
 import (
-"survive/server/logic/character"
+	"survive/server/logic/character"
+	"survive/server/logic/dataStructure"
 )
 
 //效果是技能的基础
@@ -8,10 +9,10 @@ import (
 //每个效果，都会定义
 //todo:以后再考虑，怎么用动态语言去实现这么多效果
 type Effect interface {
-	PutOn(from, target *character.Character) //产生效果，一个从from发动，丢给target的动作
+	PutOn(time *dataStructure.Time,from, target *character.Character) //产生效果，一个从from发动，丢给target的动作
 	Config(args ...interface{}) //技能在组合效果的时候，可以给效果设置一些参数
-	Update(args ...interface{}) //进行生效处理(Update可能多次被调用)
-	Remove() //移除效果
+//	Update(args ...interface{}) //进行生效处理(Update可能多次被调用)
+	Remove(time *dataStructure.Time) //移除效果
 	GetInfo() string //获取描述信息
 }
 
