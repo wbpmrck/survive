@@ -12,7 +12,8 @@ import (
 type SkillItem interface {
 	SetTargetChooser(chooser targetChoose.TargetChooser) //设定技能的选择目标的策略
 	Install(from *character.Character,targets []*character.Character)
-	Update() //进行技能的生效处理(对于buf类技能，Update可能多次被调用)
+	GetInfo() string //获取描述信息
+	Update(args ...interface{}) //进行技能的生效处理(Update可能多次被调用)
 	UnInstall() //技能结束处理，表示该技能释放完毕
 }
 
@@ -21,6 +22,7 @@ type SkillItem interface {
 //技能的释放，就是对所有技能项目的激活
 type Skill interface {
 	Install(from *character.Character,targets []*character.Character)
-	Update() //进行技能的生效处理(对于buf类技能，Update可能多次被调用)
+	GetInfo() string //获取描述信息
+	Update(args ...interface{}) //进行技能的生效处理(Update可能多次被调用)
 	UnInstall() //技能结束处理，表示该技能释放完毕
 }

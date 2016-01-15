@@ -1,7 +1,8 @@
-package targetChoose
+package builtIn
 import (
 	"survive/server/logic/character"
 	"sort"
+	"survive/server/logic/skill/targetChoose"
 )
 
 //定义interface{},并实现sort.Interface接口的三个方法
@@ -40,5 +41,5 @@ func ChooseTargets(from *character.Character,params ...interface{})(targets []*c
 }
 
 func init(){
-	AllChooserFunc["ByWeak"] = ChooseTargets
+	targetChoose.Register("ByWeak",ChooseTargets)
 }

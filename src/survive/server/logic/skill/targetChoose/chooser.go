@@ -11,5 +11,17 @@ import "survive/server/logic/character"
 
 type TargetChooser func(from *character.Character,params ...interface{})(targets []*character.Character,error bool)
 
-const AllChooserFunc map[string]TargetChooser = make(map[string]TargetChooser)
+var allChooserFunc map[string]TargetChooser = make(map[string]TargetChooser)
+
+/**
+	注册目标选择函数
+ */
+func Register(name string,chooser TargetChooser){
+	allChooserFunc[name] = chooser
+}
+
+//获取目标选择函数
+func Get(name string) TargetChooser{
+	return allChooserFunc[name]
+}
 

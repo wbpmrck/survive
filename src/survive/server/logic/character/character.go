@@ -3,6 +3,7 @@ import (
 	"survive/server/logic/consts/nature"
 	"survive/server/logic/battle"
 	"survive/server/logic/player"
+	"survive/server/logic/dataStructure/attribute"
 )
 
 type Character struct {
@@ -11,7 +12,7 @@ type Character struct {
 
 	//Sex,Age,Weight,Height int //性别，年龄，体重，身高
 	//Str,Agi,Pcp,Int,Vit,Luk,Und int //力量 敏捷 感知 智力 体质 运气 悟性
-	Attributes map[string]Attribute //存储所有属性名
+	Attributes map[string]attribute.Attribute //存储所有属性名
 	battle.Warrior //内嵌“战斗者”类型，实现战斗能力
 }
 

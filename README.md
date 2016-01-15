@@ -18,6 +18,8 @@ this is a part-time project,it can be a funny game.
 ####TODO
 * 设计
     > 完成首批需求收集，确定0.1版本目标
+* 装备系统
+    > 装备的效果、和技能效果，如何区分和设计
 
 * 沙箱和脚本
 
