@@ -1,7 +1,7 @@
 package player
 
 type Player struct {
-	Id int
+	Id string
 	UserName,Password string
 	VipLevel int
 }

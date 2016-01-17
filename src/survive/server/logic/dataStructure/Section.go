@@ -5,3 +5,10 @@ import "survive/server/logic/dataStructure/attribute"
 type Section struct {
 	From,To *attribute.Attribute
 }
+
+func NewSection(from,to float64) *Section{
+	return &Section{
+		From:attribute.NewAttribute("from","",from),
+		To:attribute.NewAttribute("to","",to),
+	}
+}

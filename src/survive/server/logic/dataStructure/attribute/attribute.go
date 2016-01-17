@@ -1,6 +1,17 @@
 package attribute
 
+const(
+	STR string = "str"
+	AGI string = "agi"
+	INT string = "int"
+	VIT string = "vit"
+	LUCK string = "luk"
+	AWARE string = "awr"
+	UNDERSTAND string = "und"
+
+)
 //描述一类实体，他们可以被当作属性看待
+//有了这一层抽象，普通属性和“计算属性” 就可以被一视同仁了
 type AttributeLike interface {
 	GetName() string //可以获取属性名
 	SetName(name string) //可以设置属性名

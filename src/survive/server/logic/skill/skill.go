@@ -11,7 +11,7 @@ import (
 //代表一个技能项
 type SkillItem interface {
 	SetTargetChooser(chooser targetChoose.TargetChooser) //设定技能的选择目标的策略
-	Install(from *character.Character,targets []*character.Character)
+	Install(from *character.Character,targets []*character.Character) //install的过程，就是给每一个target创建effect对象，并PutOn的过程
 	GetInfo() string //获取描述信息
 	Update(args ...interface{}) //进行技能的生效处理(Update可能多次被调用)
 	UnInstall() //技能结束处理，表示该技能释放完毕
