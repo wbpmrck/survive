@@ -9,6 +9,11 @@ import (
 
 type EffectCarrier interface {
 	event.EventEmitter
+
+	/*
+		获取该单位目前所携带的所有效果
+	 */
+	GetAllEffects() []*effect.Effect
 	/*
 		给单位尝试加上一个效果。
 		该单位应该执行以下操作：

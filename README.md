@@ -4,13 +4,6 @@ this is a part-time project,it can be a funny game.
 
 ####DOING
 * 开发
-    * skillBase.go
-        * 定义技能基类的结构，里面应该分别包含技能项、技能类定义
-        * 实现skill的接口
-            * 注意技能接口的实现应该也是依赖effect接口的实现
-    * effect.go
-        * 添加效果字典集合
-        * 在builtIn里添加几个内置的效果
     * battle.go
         * 定义粗略的战斗流程
             * 战斗过程就是时间流逝的过程
@@ -23,6 +16,11 @@ this is a part-time project,it can be a funny game.
     * eventEmitter.go
         * 支持通用的事件订阅、发布模型
         * 在订阅事件的时候，对EventHandler进行构造和调用
+        * 让character内嵌Eventbase来提供事件发射、取消后续事件执行等功能
+        * 测试一下事件机制能否正常工作
+    * 规则的默认实现，以及实体的组合
+        * effectCarrier,attributeCarrier,moveable等规则，如果有默认通用实现的，实现通用的版本
+        * character对这些默认实现进行组合，从而实现自己的功能
 ####TODO
 * 设计
     > 完成首批需求收集，确定0.1版本目标
@@ -37,4 +35,13 @@ this is a part-time project,it can be a funny game.
     > 建立基本的沙箱机制
     
     > 使用javascript来描述业务逻辑
-  
+
+####DONE
+* 开发
+    * skillBase.go
+        * 定义技能基类的结构，里面应该分别包含技能项、技能类定义
+        * 实现skill的接口
+            * 注意技能接口的实现应该也是依赖effect接口的实现
+    * effect.go
+        * 添加效果字典集合
+        * 在builtIn里添加几个内置的效果

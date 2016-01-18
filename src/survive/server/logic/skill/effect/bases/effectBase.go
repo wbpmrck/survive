@@ -85,6 +85,14 @@ func(self *EffectBase) GetFrom() rule.EffectCarrier {
 func(self *EffectBase) GetTarget() rule.EffectCarrier {
 	return self.Target
 }
+//获取效果的开始作用时间
+func(self *EffectBase) GetPutOnTime()*dataStructure.Time {
+	return self.PutOnTime
+}
+//获取效果的结束作用时间
+func(self *EffectBase) GetRemoveTime()*dataStructure.Time {
+	return self.RemoveTime
+}
 
 //空实现，仅仅为了满足接口定义
 func(self *EffectBase)Config(args ...interface{}){

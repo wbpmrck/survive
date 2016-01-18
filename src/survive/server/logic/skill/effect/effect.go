@@ -13,6 +13,8 @@ import (
  */
 //todo:以后再考虑，怎么用动态语言去实现这么多效果
 type Effect interface {
+	GetPutOnTime() *dataStructure.Time//效果生效时间
+	GetRemoveTime() *dataStructure.Time//效果结束时间
 //	PutOn(time *dataStructure.Time,from, target *character) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
 	PutOn(time *dataStructure.Time,from, target rule.EffectCarrier) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
 	Config(args ...interface{}) //技能在组合效果的时候，可以给效果设置一些参数
