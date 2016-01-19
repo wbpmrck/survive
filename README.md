@@ -13,14 +13,23 @@ this is a part-time project,it can be a funny game.
                 * 根据最新状态判断行动顺序
                 * 按照顺序先后，执行角色行动逻辑
         * 定义战斗判定阶段，考虑与技能、单位动作的衔接问题
+    * character.go / warrior.go
+        * 实现更多的战斗过程代码
+        * 编写模拟战斗测试代码
     * eventEmitter.go
-        * 支持通用的事件订阅、发布模型
-        * 在订阅事件的时候，对EventHandler进行构造和调用
-        * 让character内嵌Eventbase来提供事件发射、取消后续事件执行等功能
-        * 测试一下事件机制能否正常工作
+        * 支持通用的事件订阅、发布模型 (OK)
+        * 在订阅事件的时候，对EventHandler进行构造和调用  (OK)
+        * 让character内嵌Eventbase来提供事件发射、取消后续事件执行等功能  (OK)
+        * 测试一下事件机制能否正常工作 (ing)
     * 规则的默认实现，以及实体的组合
-        * effectCarrier,attributeCarrier,moveable等规则，如果有默认通用实现的，实现通用的版本
-        * character对这些默认实现进行组合，从而实现自己的功能
+        * 各种规则，如果有默认通用实现的，实现通用的版本
+            * effectCarrier (OK)
+            * attributeCarrier  (OK)
+        * character对这些默认实现进行组合，从而实现自己的功能 (ing)
+            * 定义一个角色 (ing)
+            * 添加属性、效果 (ing)
+            * 测试用例验证效果是否生效 (ing)
+
 ####TODO
 * 设计
     > 完成首批需求收集，确定0.1版本目标

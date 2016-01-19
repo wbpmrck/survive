@@ -7,7 +7,8 @@ type HandleResult struct {
 	HandleResult string
 }
 //事件处理函数，第一个版本简单做，所以不支持异步的处理
-type HandleFunc func(time *dataStructure.Time, contextParams ...interface{}) (isCancel bool,handleResult string)
+//type HandleFunc func(time *dataStructure.Time, contextParams ...interface{}) (isCancel bool,handleResult string)
+type HandleFunc func(contextParams ...interface{}) (isCancel bool,handleResult string)
 /*
 	基础的事件处理器
 

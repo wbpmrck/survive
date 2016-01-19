@@ -7,7 +7,9 @@ import (
 
 func TestCreate(t *testing.T){
 
-	attrMap := make(map[string]*Attribute)
+	//下面2种方式，主要是测试golang 的slice 是否支持协变.(目前测试是不支持)
+//	attrMap := make(map[string]Attribute)
+	attrMap := make(map[string]AttributeLike)
 
 	str:=NewAttribute("力量","",10)
 	agi:=NewAttribute("敏捷","",12)
@@ -15,7 +17,7 @@ func TestCreate(t *testing.T){
 	attrMap["agi"] = agi
 
 	//创建一个计算属性cp1,它的值由另外2个属性决定
-	cp1 := NewComputedAttribute("战斗力","依赖力量,敏捷",100,attrMap,func(dependencies map[string]*Attribute) float64{
+	cp1 := NewComputedAttribute("战斗力","依赖力量,敏捷",100,attrMap,func(dependencies map[string]AttributeLike) float64{
 		return dependencies["str"].GetValue().Get()*10+dependencies["agi"].GetValue().Get()*2+2
 	})
 

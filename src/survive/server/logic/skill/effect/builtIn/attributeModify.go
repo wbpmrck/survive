@@ -17,9 +17,9 @@ type AttributeModify struct {
 }
 
 //效果施加
-func(self *AttributeModify) PutOn(time *dataStructure.Time,from, target composite.AttributeAndEffectCarrier) bool{
+func(self *AttributeModify) PutOn(from, target composite.AttributeAndEffectCarrier) bool{
 	//如果该效果可以被添加到对象上
-	if self.EffectBase.PutOn(time,from,target){
+	if self.EffectBase.PutOn(from,target){
 		//增加属性
 		target.GetAttr(self.AttrKey).GetValue().Add(self.Amount)
 		return true
@@ -31,9 +31,9 @@ func(self *AttributeModify) PutOn(time *dataStructure.Time,from, target composit
 
 
 //效果移除
-func(self *AttributeModify) Remove(time *dataStructure.Time) bool{
+func(self *AttributeModify) Remove() bool{
 	//如果此时效果可以被移除
-	if self.EffectBase.Remove(time){
+	if self.EffectBase.Remove(){
 		//减少属性
 		target := self.Target.(composite.AttributeAndEffectCarrier)
 		target.GetAttr(self.AttrKey).GetValue().Add(-self.Amount)
@@ -64,7 +64,7 @@ func(self *AttributeModify) GetInfo() string{
 }
 
 func init(){
-	effect.RegisterFactory("AttributeModify",func() *effect.Effect{
+	effect.RegisterFactory("AttributeModify",func() effect.Effect{
 		return &AttributeModify{
 			bases.EffectBase:bases.NewBase("AttributeModify"),
 		}

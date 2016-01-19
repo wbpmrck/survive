@@ -5,11 +5,11 @@ package attribute
  */
 
 //原始值计算函数，返回计算好的原始值
-type RawComputer func(dependencies map[string]*Attribute) float64
+type RawComputer func(dependencies map[string]AttributeLike) float64
 
 type ComputedAttribute struct {
 	*Attribute //计算属性首先自己是一个属性
-	dependencies map[string]*Attribute //保存它所依赖的其他属性的列表
+	dependencies map[string]AttributeLike //保存它所依赖的其他属性的列表
 	rawComputer RawComputer //保存该属性的最终值的计算方法
 }
 //获取计算属性的值(注意很有意思的一点,GetValue被覆盖了，因为计算属性的属性获取方式不一样)
@@ -19,7 +19,7 @@ func(self *ComputedAttribute) GetValue() *Value{
 	return self.val
 }
 
-func NewComputedAttribute(name,desc string,rawValue float64,dependencies map[string]*Attribute,computer RawComputer) *ComputedAttribute{
+func NewComputedAttribute(name,desc string,rawValue float64,dependencies map[string]AttributeLike,computer RawComputer) *ComputedAttribute{
 	return &ComputedAttribute{
 		Attribute:NewAttribute(name,desc,rawValue),
 		dependencies:dependencies,

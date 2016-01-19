@@ -14,24 +14,25 @@ type TimeVariable interface {
 		注册一个处理函数,在实体被更新之前调用
 		该处理函数如果返回true,则实体会继续进行后续更新操作，如果返回false,则会让实体跳过本次更新(并触发 OnCancelUpdate)
 	 */
-	OnBeforeUpdate (handler event.EventHandler) int64
+	OnBeforeUpdate (handler *event.EventHandler) event.HandlerId
 	/*
 		注册一个处理函数，在实体被更新的时候调用
 		该函数可以操作实体的任何内容
 	 */
-	OnUpdate (handler event.EventHandler) int64
+	OnUpdate (handler *event.EventHandler) event.HandlerId
 
 	/*
 		注册一个处理函数，在实体被更新之后调用
 	 */
-	OnAfterUpdate (handler event.EventHandler) int64
+	OnAfterUpdate (handler *event.EventHandler) event.HandlerId
 	/*
 		实体的更新操作被取消之后触发一次，可以用来做一些兜底操作
 	 */
-	OnCancelUpdate (handler event.EventHandler) int64
+	OnCancelUpdate (handler *event.EventHandler) event.HandlerId
 
 	/*
 		update的入口，由时间管理者输入当前时间
 	 */
-	Update(time *dataStructure.Time)
+//	Update(time *dataStructure.Time)
+	Update()
 }

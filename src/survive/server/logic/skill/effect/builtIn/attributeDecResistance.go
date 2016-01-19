@@ -32,11 +32,11 @@ type AttributeDecResistance struct {
 }
 
 //效果施加
-func(self *AttributeDecResistance) PutOn(time *dataStructure.Time,from, target composite.AttributeAndEffectCarrier) bool{
+func(self *AttributeDecResistance) PutOn(from, target composite.AttributeAndEffectCarrier) bool{
 	//如果该效果可以被添加到对象上
-	if self.EffectBase.PutOn(time,from,target){
+	if self.EffectBase.PutOn(from,target){
 		//注册一个处理事件，到对象的 效果生效前 阶段
-		target.OnBeforePutOnEffect(event.NewEventHandler(func (time *dataStructure.Time, contextParams ...interface{}) (isCancel bool,handleResult string){
+		target.OnBeforePutOnEffect(event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
 			isCancel = false //默认不取消
 
 			//看看即将生效的效果，是不是 "属性修正效果"
@@ -63,9 +63,9 @@ func(self *AttributeDecResistance) PutOn(time *dataStructure.Time,from, target c
 
 
 //效果移除
-func(self *AttributeDecResistance) Remove(time *dataStructure.Time) bool{
+func(self *AttributeDecResistance) Remove() bool{
 	//如果此时效果可以被移除
-	if self.EffectBase.Remove(time){
+	if self.EffectBase.Remove(){
 		//减少属性
 		target := self.Target.(composite.AttributeAndEffectCarrier)
 		target.GetAttr(self.AttrKey).GetValue().Add(-self.Amount)
@@ -103,7 +103,7 @@ func(self *AttributeDecResistance) GetInfo() string{
 }
 
 func init(){
-	effect.RegisterFactory("AttributeDecResistance",func() *effect.Effect{
+	effect.RegisterFactory("AttributeDecResistance",func() effect.Effect{
 		return &AttributeDecResistance{
 			bases.EffectBase:bases.NewBase("AttributeDecResistance"),
 		}

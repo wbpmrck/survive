@@ -2,6 +2,7 @@ package bases
 import (
 	"survive/server/logic/dataStructure"
 	"survive/server/logic/rule"
+	"survive/server/logic/time"
 )
 
 /*
@@ -15,17 +16,17 @@ import (
 type EffectBase struct {
 	//效果的使用者，和受众
 	From, Target rule.EffectCarrier
-	PutOnTime *dataStructure.Time//效果生效时间
-	RemoveTime *dataStructure.Time //效果结束时间
+	PutOnTime dataStructure.Time//效果生效时间
+	RemoveTime dataStructure.Time //效果结束时间
 	Alive bool //效果是否存在
-	Id string //效果名
+	Name string //效果名
 }
 //获取效果的名字
-func(self *EffectBase) GetId() string{
-	return self.Id
+func(self *EffectBase) GetName() string{
+	return self.Name
 }
 //尝试给对象添加一个效果
-func(self *EffectBase) PutOn(time *dataStructure.Time,from, target rule.EffectCarrier) bool{
+func(self *EffectBase) PutOn(from, target rule.EffectCarrier) bool{
 	//如果效果还没有对象产生
 	if self.Target ==nil{
 
@@ -33,7 +34,7 @@ func(self *EffectBase) PutOn(time *dataStructure.Time,from, target rule.EffectCa
 		isTargetReceive := self.Target.PutOnEffect(self)
 
 		if isTargetReceive{
-			self.PutOnTime = time
+			self.PutOnTime = time.GetNow()
 			self.From = from
 			self.Target = target
 			self.Alive = true
@@ -49,7 +50,7 @@ func(self *EffectBase) PutOn(time *dataStructure.Time,from, target rule.EffectCa
 	}
 }
 //效果移除
-func(self *EffectBase) Remove(time *dataStructure.Time) bool{
+func(self *EffectBase) Remove() bool{
 	//如果当前效果还有效、有接受对象
 	if self.Alive && self.Target!=nil {
 
@@ -58,7 +59,7 @@ func(self *EffectBase) Remove(time *dataStructure.Time) bool{
 
 		//如果对象答应取消该效果
 		if isTargetRemove {
-			self.RemoveTime = time
+			self.RemoveTime = time.GetNow()
 			self.From = nil
 			self.Target = nil
 			self.Alive = false
@@ -86,11 +87,11 @@ func(self *EffectBase) GetTarget() rule.EffectCarrier {
 	return self.Target
 }
 //获取效果的开始作用时间
-func(self *EffectBase) GetPutOnTime()*dataStructure.Time {
+func(self *EffectBase) GetPutOnTime() dataStructure.Time {
 	return self.PutOnTime
 }
 //获取效果的结束作用时间
-func(self *EffectBase) GetRemoveTime()*dataStructure.Time {
+func(self *EffectBase) GetRemoveTime() dataStructure.Time {
 	return self.RemoveTime
 }
 
@@ -103,9 +104,9 @@ func(self *EffectBase) GetInfo() string{
 	return "EffectBase"
 }
 
-func NewBase(id string) *EffectBase{
+func NewBase(name string) *EffectBase{
 	return &EffectBase{
-		Id:id,
+		Name:name,
 		Alive:false,
 	}
 }
