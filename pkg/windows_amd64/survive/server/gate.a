@@ -1,219 +1,0 @@
-!<arch>
-__.PKGDEF       0           0     0     644     28129     `
-go object windows amd64 go1.5.1 X:none
-build id "283e788040d99fb1346cd80e4a313c839519425c"
-
-$$
-package gate
-	import runtime "runtime"
-	import internal "survive/server/gate/internal"
-	import msg "survive/server/msg"
-	import login "survive/server/login"
-	import gate "github.com/name5566/leaf/gate" // indirect
-	import network "github.com/name5566/leaf/network" // indirect
-	type @"github.com/name5566/leaf/network".Processor interface { Marshal(@"github.com/name5566/leaf/network".msg interface {}) (? [][]byte, ? error); Route(@"github.com/name5566/leaf/network".msg interface {}, @"github.com/name5566/leaf/network".userData interface {}) (? error); Unmarshal(@"github.com/name5566/leaf/network".data []byte) (? interface {}, ? error) }
-	import chanrpc "github.com/name5566/leaf/chanrpc" // indirect
-	type @"github.com/name5566/leaf/chanrpc".RetInfo struct { @"github.com/name5566/leaf/chanrpc".ret interface {}; @"github.com/name5566/leaf/chanrpc".err error; @"github.com/name5566/leaf/chanrpc".cb interface {} }
-	type @"github.com/name5566/leaf/chanrpc".CallInfo struct { @"github.com/name5566/leaf/chanrpc".f interface {}; @"github.com/name5566/leaf/chanrpc".args []interface {}; @"github.com/name5566/leaf/chanrpc".chanRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; @"github.com/name5566/leaf/chanrpc".cb interface {} }
-	type @"github.com/name5566/leaf/chanrpc".Client struct { @"github.com/name5566/leaf/chanrpc".s *@"github.com/name5566/leaf/chanrpc".Server; @"github.com/name5566/leaf/chanrpc".chanSyncRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; ChanAsynRet chan *@"github.com/name5566/leaf/chanrpc".RetInfo; @"github.com/name5566/leaf/chanrpc".pendingAsynCall int }
-	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") AsynCall (@"github.com/name5566/leaf/chanrpc".id·2 interface {}, @"github.com/name5566/leaf/chanrpc"._args·3 ...interface {})
-	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") Call0 (@"github.com/name5566/leaf/chanrpc".id·3 interface {}, @"github.com/name5566/leaf/chanrpc".args·4 ...interface {}) (? error)
-	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") Call1 (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".args·5 ...interface {}) (? interface {}, ? error)
-	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") CallN (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".args·5 ...interface {}) (? []interface {}, ? error)
-	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") Cb (@"github.com/name5566/leaf/chanrpc".ri·2 *@"github.com/name5566/leaf/chanrpc".RetInfo "esc:0x9")
-	func (@"github.com/name5566/leaf/chanrpc".c·1 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") Close ()
-	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x9") @"github.com/name5566/leaf/chanrpc".asynCall (@"github.com/name5566/leaf/chanrpc".id·3 interface {}, @"github.com/name5566/leaf/chanrpc".args·4 []interface {}, @"github.com/name5566/leaf/chanrpc".cb·5 interface {}, @"github.com/name5566/leaf/chanrpc".n·6 int) (? error)
-	func (@"github.com/name5566/leaf/chanrpc".c·2 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") @"github.com/name5566/leaf/chanrpc".call (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo, @"github.com/name5566/leaf/chanrpc".block·4 bool) (@"github.com/name5566/leaf/chanrpc".err·1 error)
-	func (@"github.com/name5566/leaf/chanrpc".c·3 *@"github.com/name5566/leaf/chanrpc".Client "esc:0x1") @"github.com/name5566/leaf/chanrpc".f (@"github.com/name5566/leaf/chanrpc".id·4 interface {}, @"github.com/name5566/leaf/chanrpc".n·5 int) (@"github.com/name5566/leaf/chanrpc".f·1 interface {}, @"github.com/name5566/leaf/chanrpc".err·2 error)
-	type @"github.com/name5566/leaf/chanrpc".Server struct { @"github.com/name5566/leaf/chanrpc".functions map[interface {}]interface {}; ChanCall chan *@"github.com/name5566/leaf/chanrpc".CallInfo }
-	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Close ()
-	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Exec (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo "esc:0x9") (@"github.com/name5566/leaf/chanrpc".err·1 error)
-	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Go (@"github.com/name5566/leaf/chanrpc".id·2 interface {} "esc:0x1", @"github.com/name5566/leaf/chanrpc".args·3 ...interface {})
-	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server) Open (@"github.com/name5566/leaf/chanrpc".l·3 int) (? *@"github.com/name5566/leaf/chanrpc".Client) { var @"github.com/name5566/leaf/chanrpc".c·4 *@"github.com/name5566/leaf/chanrpc".Client; ; @"github.com/name5566/leaf/chanrpc".c·4 = new(@"github.com/name5566/leaf/chanrpc".Client); @"github.com/name5566/leaf/chanrpc".c·4.@"github.com/name5566/leaf/chanrpc".s = @"github.com/name5566/leaf/chanrpc".s·2; @"github.com/name5566/leaf/chanrpc".c·4.@"github.com/name5566/leaf/chanrpc".chanSyncRet = make(chan *@"github.com/name5566/leaf/chanrpc".RetInfo, 0x1); @"github.com/name5566/leaf/chanrpc".c·4.ChanAsynRet = make(chan *@"github.com/name5566/leaf/chanrpc".RetInfo, @"github.com/name5566/leaf/chanrpc".l·3); return @"github.com/name5566/leaf/chanrpc".c·4 }
-	func (@"github.com/name5566/leaf/chanrpc".s·1 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") Register (@"github.com/name5566/leaf/chanrpc".id·2 interface {}, @"github.com/name5566/leaf/chanrpc".f·3 interface {})
-	func (@"github.com/name5566/leaf/chanrpc".s·2 *@"github.com/name5566/leaf/chanrpc".Server "esc:0x1") @"github.com/name5566/leaf/chanrpc".ret (@"github.com/name5566/leaf/chanrpc".ci·3 *@"github.com/name5566/leaf/chanrpc".CallInfo "esc:0x9", @"github.com/name5566/leaf/chanrpc".ri·4 *@"github.com/name5566/leaf/chanrpc".RetInfo) (@"github.com/name5566/leaf/chanrpc".err·1 error)
-	import time "time" // indirect
-	type @"time".Duration int64
-	func (@"time".d·2 @"time".Duration) Hours () (? float64) { var @"time".hour·3 @"time".Duration; ; @"time".hour·3 = @"time".d·2 / @"time".Duration(0x34630b8a000); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0x34630b8a000); return float64(@"time".hour·3) + float64(@"time".nsec·4) * 8190022623310637111963488201822504381538623676021880892417778544696899264837610290203272971060556344039023584360473938041055625214280336402169897364226048p-553 }
-	func (@"time".d·2 @"time".Duration) Minutes () (? float64) { var @"time".min·3 @"time".Duration; ; @"time".min·3 = @"time".d·2 / @"time".Duration(0xdf8475800); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0xdf8475800); return float64(@"time".min·3) + float64(@"time".nsec·4) * 7678146209353722106395056769533233877065564876941352542109479049699919628723768656821910653339403201031675627614471533358284117434246264392176261853609984p-547 }
-	func (@"time".d·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".d·2) }
-	func (@"time".d·2 @"time".Duration) Seconds () (? float64) { var @"time".sec·3 @"time".Duration; ; @"time".sec·3 = @"time".d·2 / @"time".Duration(0x3b9aca00); var @"time".nsec·4 @"time".Duration; ; @"time".nsec·4 = @"time".d·2 % @"time".Duration(0x3b9aca00); return float64(@"time".sec·3) + float64(@"time".nsec·4) * 7198262071269114660816079141112770740375861891461678802759824945047098083990024106014198994535558872472104883612039846078596891298747423852523262413111296p-541 }
-	func (@"time".d·2 @"time".Duration) String () (? string)
-	type @"github.com/name5566/leaf/gate".Gate struct { MaxConnNum int; PendingWriteNum int; MaxMsgLen uint32; Processor @"github.com/name5566/leaf/network".Processor; AgentChanRPC *@"github.com/name5566/leaf/chanrpc".Server; WSAddr string; HTTPTimeout @"time".Duration; TCPAddr string; LenMsgLen int; LittleEndian bool }
-	func (@"github.com/name5566/leaf/gate".gate·1 *@"github.com/name5566/leaf/gate".Gate "esc:0x1") OnDestroy () {  }
-	func (@"github.com/name5566/leaf/gate".gate·1 *@"github.com/name5566/leaf/gate".Gate) Run (@"github.com/name5566/leaf/gate".closeSig·2 chan bool "esc:0x1")
-	type @"survive/server/gate/internal".Module struct { ? *@"github.com/name5566/leaf/gate".Gate }
-	func (@"survive/server/gate/internal".m·1 *@"survive/server/gate/internal".Module "esc:0x1") OnInit () { @"survive/server/gate/internal".m·1.Gate = (&@"github.com/name5566/leaf/gate".Gate{ MaxConnNum:@"survive/server/conf".Server.MaxConnNum, PendingWriteNum:@"survive/server/conf".PendingWriteNum, MaxMsgLen:@"survive/server/conf".MaxMsgLen, WSAddr:@"survive/server/conf".Server.WSAddr, HTTPTimeout:@"survive/server/conf".HTTPTimeout, TCPAddr:@"survive/server/conf".Server.TCPAddr, LenMsgLen:@"survive/server/conf".LenMsgLen, LittleEndian:@"survive/server/conf".LittleEndian, Processor:@"survive/server/msg".Processor, AgentChanRPC:@"survive/server/game".ChanRPC }) }
-	var @"".Module *@"survive/server/gate/internal".Module
-	func @"".init ()
-	import conf "survive/server/conf" // indirect
-	var @"survive/server/conf".Server struct { LogLevel string; LogPath string; WSAddr string; TCPAddr string; MaxConnNum int }
-	var @"survive/server/conf".PendingWriteNum int
-	var @"survive/server/conf".MaxMsgLen uint32
-	var @"survive/server/conf".HTTPTimeout @"time".Duration
-	var @"survive/server/conf".LenMsgLen int
-	var @"survive/server/conf".LittleEndian bool
-	import json "github.com/name5566/leaf/network/json" // indirect
-	import reflect "reflect" // indirect
-	type @"reflect".ChanDir int
-	func (@"reflect".d·2 @"reflect".ChanDir) String () (? string)
-	type @"reflect".StructTag string
-	func (@"reflect".tag·2 @"reflect".StructTag "esc:0x12") Get (@"reflect".key·3 string "esc:0x1") (? string)
-	type @"reflect".StructField struct { Name string; PkgPath string; Type @"reflect".Type; Tag @"reflect".StructTag; Offset uintptr; Index []int; Anonymous bool }
-	type @"reflect".Kind uint
-	func (@"reflect".k·2 @"reflect".Kind) String () (? string)
-	type @"reflect".typeAlg struct { @"reflect".hash func(? @"unsafe".Pointer, ? uintptr) (? uintptr); @"reflect".equal func(? @"unsafe".Pointer, ? @"unsafe".Pointer) (? bool) }
-	type @"reflect".method struct { @"reflect".name *string; @"reflect".pkgPath *string; @"reflect".mtyp *@"reflect".rtype; @"reflect".typ *@"reflect".rtype; @"reflect".ifn @"unsafe".Pointer; @"reflect".tfn @"unsafe".Pointer }
-	type @"reflect".uncommonType struct { @"reflect".name *string; @"reflect".pkgPath *string; @"reflect".methods []@"reflect".method }
-	func (@"reflect".t·2 *@"reflect".uncommonType "esc:0x22") Method (@"reflect".i·3 int) (@"reflect".m·1 @"reflect".Method)
-	func (@"reflect".t·3 *@"reflect".uncommonType "esc:0x22") MethodByName (@"reflect".name·4 string "esc:0x1") (@"reflect".m·1 @"reflect".Method, @"reflect".ok·2 bool)
-	func (@"reflect".t·2 *@"reflect".uncommonType "esc:0x32") Name () (? string) { if @"reflect".t·2 == nil || @"reflect".t·2.@"reflect".name == nil { return "" }; return *@"reflect".t·2.@"reflect".name }
-	func (@"reflect".t·2 *@"reflect".uncommonType "esc:0x1") NumMethod () (? int) { if @"reflect".t·2 == nil { return 0x0 }; return len(@"reflect".t·2.@"reflect".methods) }
-	func (@"reflect".t·2 *@"reflect".uncommonType "esc:0x32") PkgPath () (? string) { if @"reflect".t·2 == nil || @"reflect".t·2.@"reflect".pkgPath == nil { return "" }; return *@"reflect".t·2.@"reflect".pkgPath }
-	func (@"reflect".t·2 *@"reflect".uncommonType "esc:0x12") @"reflect".uncommon () (? *@"reflect".uncommonType) { return @"reflect".t·2 }
-	type @"reflect".rtype struct { @"reflect".size uintptr; @"reflect".ptrdata uintptr; @"reflect".hash uint32; _ uint8; @"reflect".align uint8; @"reflect".fieldAlign uint8; @"reflect".kind uint8; @"reflect".alg *@"reflect".typeAlg; @"reflect".gcdata *byte; @"reflect".string *string; @"reflect".? *@"reflect".uncommonType; @"reflect".ptrToThis *@"reflect".rtype; @"reflect".zero @"unsafe".Pointer }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Align () (? int) { return int(@"reflect".t·2.@"reflect".align) }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") AssignableTo (@"reflect".u·3 @"reflect".Type "esc:0x1") (? bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Bits () (? int)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") ChanDir () (? @"reflect".ChanDir)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Comparable () (? bool) { return @"reflect".t·2.@"reflect".alg != nil && @"reflect".t·2.@"reflect".alg.@"reflect".equal != nil }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x9") ConvertibleTo (@"reflect".u·3 @"reflect".Type "esc:0x9") (? bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x22") Elem () (? @"reflect".Type)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x3a") Field (@"reflect".i·3 int) (? @"reflect".StructField)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") FieldAlign () (? int) { return int(@"reflect".t·2.@"reflect".fieldAlign) }
-	func (@"reflect".t·2 *@"reflect".rtype) FieldByIndex (@"reflect".index·3 []int "esc:0x1") (? @"reflect".StructField)
-	func (@"reflect".t·3 *@"reflect".rtype) FieldByName (@"reflect".name·4 string "esc:0x1") (? @"reflect".StructField, ? bool)
-	func (@"reflect".t·3 *@"reflect".rtype) FieldByNameFunc (@"reflect".match·4 func(? string) (? bool) "esc:0x1") (? @"reflect".StructField, ? bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Implements (@"reflect".u·3 @"reflect".Type) (? bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x32") In (@"reflect".i·3 int) (? @"reflect".Type)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") IsVariadic () (? bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x22") Key () (? @"reflect".Type)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Kind () (? @"reflect".Kind) { return @"reflect".Kind(@"reflect".t·2.@"reflect".kind & 0x1f) }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Len () (? int)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x32") Method (@"reflect".i·3 int) (@"reflect".m·1 @"reflect".Method)
-	func (@"reflect".t·3 *@"reflect".rtype "esc:0x32") MethodByName (@"reflect".name·4 string "esc:0x1") (@"reflect".m·1 @"reflect".Method, @"reflect".ok·2 bool)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x42") Name () (? string) { return @"reflect".t·2.@"reflect".uncommonType.Name() }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") NumField () (? int)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") NumIn () (? int)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") NumMethod () (? int) { if @"reflect".t·2.Kind() == @"reflect".Kind(0x14) { var @"reflect".tt·3 *@"reflect".interfaceType; ; @"reflect".tt·3 = (*@"reflect".interfaceType)(@"unsafe".Pointer(@"reflect".t·2)); return @"reflect".tt·3.NumMethod() }; return @"reflect".t·2.@"reflect".uncommonType.NumMethod() }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") NumOut () (? int)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x32") Out (@"reflect".i·3 int) (? @"reflect".Type)
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x42") PkgPath () (? string) { return @"reflect".t·2.@"reflect".uncommonType.PkgPath() }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") Size () (? uintptr) { return @"reflect".t·2.@"reflect".size }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x32") String () (? string) { return *@"reflect".t·2.@"reflect".string }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x12") @"reflect".common () (? *@"reflect".rtype) { return @"reflect".t·2 }
-	func (@"reflect".t·2 *@"reflect".rtype "esc:0x1") @"reflect".pointers () (? bool) { return @"reflect".t·2.@"reflect".kind & 0x80 == 0x0 }
-	func (@"reflect".t·2 *@"reflect".rtype) @"reflect".ptrTo () (? *@"reflect".rtype)
-	type @"reflect".flag uintptr
-	func (@"reflect".f·2 @"reflect".flag) @"reflect".kind () (? @"reflect".Kind) { return @"reflect".Kind(@"reflect".f·2 & @"reflect".flag(0x1f)) }
-	func (@"reflect".f·1 @"reflect".flag) @"reflect".mustBe (@"reflect".expected·2 @"reflect".Kind)
-	func (@"reflect".f·1 @"reflect".flag) @"reflect".mustBeAssignable ()
-	func (@"reflect".f·1 @"reflect".flag) @"reflect".mustBeExported ()
-	type @"reflect".Value struct { @"reflect".typ *@"reflect".rtype; @"reflect".ptr @"unsafe".Pointer; @"reflect".? @"reflect".flag }
-	func (@"reflect".v·2 @"reflect".Value) Addr () (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Bool () (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x2a") Bytes () (? []byte)
-	func (@"reflect".v·2 @"reflect".Value) Call (@"reflect".in·3 []@"reflect".Value "esc:0x9") (? []@"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) CallSlice (@"reflect".in·3 []@"reflect".Value "esc:0x9") (? []@"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") CanAddr () (? bool) { return @"reflect".v·2.@"reflect".flag & @"reflect".flag(0x80) != @"reflect".flag(0x0) }
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") CanInterface () (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") CanSet () (? bool) { return @"reflect".v·2.@"reflect".flag & @"reflect".flag(0xa0) == @"reflect".flag(0x80) }
-	func (@"reflect".v·2 @"reflect".Value) Cap () (? int)
-	func (@"reflect".v·1 @"reflect".Value) Close ()
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Complex () (? complex128)
-	func (@"reflect".v·2 @"reflect".Value) Convert (@"reflect".t·3 @"reflect".Type) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Elem () (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Field (@"reflect".i·3 int) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1a") FieldByIndex (@"reflect".index·3 []int "esc:0x1") (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) FieldByName (@"reflect".name·3 string "esc:0x1") (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) FieldByNameFunc (@"reflect".match·3 func(? string) (? bool) "esc:0x1") (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Float () (? float64)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Index (@"reflect".i·3 int) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Int () (? int64)
-	func (@"reflect".v·2 @"reflect".Value) Interface () (@"reflect".i·1 interface {})
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") InterfaceData () (? [2]uintptr)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") IsNil () (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") IsValid () (? bool) { return @"reflect".v·2.@"reflect".flag != @"reflect".flag(0x0) }
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Kind () (? @"reflect".Kind) { return @"reflect".v·2.@"reflect".flag.@"reflect".kind() }
-	func (@"reflect".v·2 @"reflect".Value) Len () (? int)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x2a") MapIndex (@"reflect".key·3 @"reflect".Value) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x9") MapKeys () (? []@"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Method (@"reflect".i·3 int) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") MethodByName (@"reflect".name·3 string "esc:0x1") (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") NumField () (? int)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") NumMethod () (? int)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") OverflowComplex (@"reflect".x·3 complex128) (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") OverflowFloat (@"reflect".x·3 float64) (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") OverflowInt (@"reflect".x·3 int64) (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") OverflowUint (@"reflect".x·3 uint64) (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Pointer () (? uintptr)
-	func (@"reflect".v·3 @"reflect".Value) Recv () (@"reflect".x·1 @"reflect".Value, @"reflect".ok·2 bool)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x9") Send (@"reflect".x·2 @"reflect".Value)
-	func (@"reflect".v·1 @"reflect".Value) Set (@"reflect".x·2 @"reflect".Value)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetBool (@"reflect".x·2 bool)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x9") SetBytes (@"reflect".x·2 []byte)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetCap (@"reflect".n·2 int)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetComplex (@"reflect".x·2 complex128)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetFloat (@"reflect".x·2 float64)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetInt (@"reflect".x·2 int64)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetLen (@"reflect".n·2 int)
-	func (@"reflect".v·1 @"reflect".Value) SetMapIndex (@"reflect".key·2 @"reflect".Value, @"reflect".val·3 @"reflect".Value)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetPointer (@"reflect".x·2 @"unsafe".Pointer)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetString (@"reflect".x·2 string)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x1") SetUint (@"reflect".x·2 uint64)
-	func (@"reflect".v·2 @"reflect".Value) Slice (@"reflect".i·3 int, @"reflect".j·4 int) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) Slice3 (@"reflect".i·3 int, @"reflect".j·4 int, @"reflect".k·5 int) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) String () (? string)
-	func (@"reflect".v·3 @"reflect".Value) TryRecv () (@"reflect".x·1 @"reflect".Value, @"reflect".ok·2 bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x9") TrySend (@"reflect".x·3 @"reflect".Value) (? bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") Type () (? @"reflect".Type)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x1") Uint () (? uint64)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") UnsafeAddr () (? uintptr)
-	func (@"reflect".v·2 @"reflect".Value) @"reflect".assignTo (@"reflect".context·3 string "esc:0x1", @"reflect".dst·4 *@"reflect".rtype, @"reflect".target·5 @"unsafe".Pointer) (? @"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value) @"reflect".call (@"reflect".op·3 string "esc:0x1", @"reflect".in·4 []@"reflect".Value "esc:0x9") (? []@"reflect".Value)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x12") @"reflect".pointer () (? @"unsafe".Pointer)
-	func (@"reflect".v·3 @"reflect".Value) @"reflect".recv (@"reflect".nb·4 bool) (@"reflect".val·1 @"reflect".Value, @"reflect".ok·2 bool)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x2a") @"reflect".runes () (? []rune)
-	func (@"reflect".v·2 @"reflect".Value "esc:0x9") @"reflect".send (@"reflect".x·3 @"reflect".Value, @"reflect".nb·4 bool) (@"reflect".selected·1 bool)
-	func (@"reflect".v·1 @"reflect".Value "esc:0x9") @"reflect".setRunes (@"reflect".x·2 []rune)
-	type @"reflect".Method struct { Name string; PkgPath string; Type @"reflect".Type; Func @"reflect".Value; Index int }
-	type @"reflect".Type interface { Align() (? int); AssignableTo(@"reflect".u @"reflect".Type) (? bool); Bits() (? int); ChanDir() (? @"reflect".ChanDir); Comparable() (? bool); ConvertibleTo(@"reflect".u @"reflect".Type) (? bool); Elem() (? @"reflect".Type); Field(@"reflect".i int) (? @"reflect".StructField); FieldAlign() (? int); FieldByIndex(@"reflect".index []int) (? @"reflect".StructField); FieldByName(@"reflect".name string) (? @"reflect".StructField, ? bool); FieldByNameFunc(@"reflect".match func(? string) (? bool)) (? @"reflect".StructField, ? bool); Implements(@"reflect".u @"reflect".Type) (? bool); In(@"reflect".i int) (? @"reflect".Type); IsVariadic() (? bool); Key() (? @"reflect".Type); Kind() (? @"reflect".Kind); Len() (? int); Method(? int) (? @"reflect".Method); MethodByName(? string) (? @"reflect".Method, ? bool); Name() (? string); NumField() (? int); NumIn() (? int); NumMethod() (? int); NumOut() (? int); Out(@"reflect".i int) (? @"reflect".Type); PkgPath() (? string); Size() (? uintptr); String() (? string); @"reflect".common() (? *@"reflect".rtype); @"reflect".uncommon() (? *@"reflect".uncommonType) }
-	type @"github.com/name5566/leaf/network/json".MsgHandler func(? []interface {})
-	type @"github.com/name5566/leaf/network/json".MsgInfo struct { @"github.com/name5566/leaf/network/json".msgType @"reflect".Type; @"github.com/name5566/leaf/network/json".msgRouter *@"github.com/name5566/leaf/chanrpc".Server; @"github.com/name5566/leaf/network/json".msgHandler @"github.com/name5566/leaf/network/json".MsgHandler }
-	type @"github.com/name5566/leaf/network/json".Processor struct { @"github.com/name5566/leaf/network/json".msgInfo map[string]*@"github.com/name5566/leaf/network/json".MsgInfo }
-	func (@"github.com/name5566/leaf/network/json".p·3 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Marshal (@"github.com/name5566/leaf/network/json".msg·4 interface {}) (? [][]byte, ? error)
-	func (@"github.com/name5566/leaf/network/json".p·1 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Register (@"github.com/name5566/leaf/network/json".msg·2 interface {})
-	func (@"github.com/name5566/leaf/network/json".p·2 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Route (@"github.com/name5566/leaf/network/json".msg·3 interface {}, @"github.com/name5566/leaf/network/json".userData·4 interface {}) (? error)
-	func (@"github.com/name5566/leaf/network/json".p·1 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") SetHandler (@"github.com/name5566/leaf/network/json".msg·2 interface {}, @"github.com/name5566/leaf/network/json".msgHandler·3 @"github.com/name5566/leaf/network/json".MsgHandler)
-	func (@"github.com/name5566/leaf/network/json".p·1 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") SetRouter (@"github.com/name5566/leaf/network/json".msg·2 interface {}, @"github.com/name5566/leaf/network/json".msgRouter·3 *@"github.com/name5566/leaf/chanrpc".Server)
-	func (@"github.com/name5566/leaf/network/json".p·3 *@"github.com/name5566/leaf/network/json".Processor "esc:0x1") Unmarshal (@"github.com/name5566/leaf/network/json".data·4 []byte) (? interface {}, ? error)
-	var @"survive/server/msg".Processor *@"github.com/name5566/leaf/network/json".Processor
-	import game "survive/server/game" // indirect
-	var @"survive/server/game".ChanRPC *@"github.com/name5566/leaf/chanrpc".Server
-	type @"reflect".imethod struct { @"reflect".name *string; @"reflect".pkgPath *string; @"reflect".typ *@"reflect".rtype }
-	type @"reflect".interfaceType struct { @"reflect".? @"reflect".rtype "reflect:\"interface\""; @"reflect".methods []@"reflect".imethod }
-	func (@"reflect".t·2 *@"reflect".interfaceType "esc:0x32") Method (@"reflect".i·3 int) (@"reflect".m·1 @"reflect".Method) { if @"reflect".i·3 < 0x0 || @"reflect".i·3 >= len(@"reflect".t·2.@"reflect".methods) { return  }; var @"reflect".p·4 *@"reflect".imethod; ; @"reflect".p·4 = &@"reflect".t·2.@"reflect".methods[@"reflect".i·3]; @"reflect".m·1.Name = *@"reflect".p·4.@"reflect".name; if @"reflect".p·4.@"reflect".pkgPath != nil { @"reflect".m·1.PkgPath = *@"reflect".p·4.@"reflect".pkgPath }; @"reflect".m·1.Type = @"reflect".toType(@"reflect".p·4.@"reflect".typ); @"reflect".m·1.Index = @"reflect".i·3; return  }
-	func (@"reflect".t·3 *@"reflect".interfaceType "esc:0x32") MethodByName (@"reflect".name·4 string "esc:0x1") (@"reflect".m·1 @"reflect".Method, @"reflect".ok·2 bool)
-	func (@"reflect".t·2 *@"reflect".interfaceType "esc:0x1") NumMethod () (? int) { return len(@"reflect".t·2.@"reflect".methods) }
-	import unsafe "unsafe" // indirect
-	func @"reflect".toType (@"reflect".t·2 *@"reflect".rtype "esc:0x12") (? @"reflect".Type) { if @"reflect".t·2 == nil { return nil }; return @"reflect".t·2 }
-
-$$
- _go_.o          0           0     0     644     3238      `
-go object windows amd64 go1.5.1 X:none
-
-!
-  go13ld<survive/server/gate/internal.a(survive/server/msg.a,survive/server/login.a �"".init.1  �  �eH�%(   H��    H;av^H��0H�    H�$�    H�L$1�H�)H�iH�    H�$H�    H�D$ H�D$H�L$(H�L$H�    H�\$�    H��0��    �      :  :type.survive/server/msg.Hello   L
-  "runtime.newobject   v  8survive/server/msg.Processor   �  <type.*survive/server/msg.Hello   �  8survive/server/login.ChanRPC   �
-  xgithub.com/name5566/leaf/network/json.(*Processor).SetRouter   �
-  0runtime.morestack_noctxt    `  "".autotmp_0000  <type.*survive/server/msg.Hello `Y_` � U	 
- %[ Tgclocals·33cdeccccebe80329f1fdbee7f5874cb Tgclocals·23e8278e2b69a3a75fa59b23c49ed6ad   zE:/MyProject/GitHub/survive/src/survive/server/gate/router.go�"".init  �  �eH�%(   H��    H;a��   H���    �� t�    ��uH����    �    �    �    �    H�    H�$�    H�\$�=     uH�    �    �    H���H�-    H�,$H�\$�    ���    �Q���"      B  "".initdone·   Z  "".initdone·   x
-  "runtime.throwinit   � "".initdone·   �
-  Bsurvive/server/gate/internal.init   �
-  .survive/server/msg.init   �
-  2survive/server/login.init   �  Ptype.survive/server/gate/internal.Module   �
-  "runtime.newobject   � 6runtime.writeBarrierEnabled   �  "".Module   �
-  "".init.1   � "".initdone·   �  "".Module   �
-  .runtime.writebarrierptr   �
-  0runtime.morestack_noctxt          R " X% X% 
- ;u Tgclocals·33cdeccccebe80329f1fdbee7f5874cb Tgclocals·33cdeccccebe80329f1fdbee7f5874cb   zE:/MyProject/GitHub/survive/src/survive/server/gate/router.go~E:/MyProject/GitHub/survive/src/survive/server/gate/external.go�Tgclocals·23e8278e2b69a3a75fa59b23c49ed6ad              �Tgclocals·33cdeccccebe80329f1fdbee7f5874cb           �Tgclocals·33cdeccccebe80329f1fdbee7f5874cb           �Tgclocals·33cdeccccebe80329f1fdbee7f5874cb           �."".Module  Rtype.*survive/server/gate/internal.Module   �0"".initdone·  type.uint8   �"".init.1·f              "".init.1   �"".init·f              "".init   �.go.string.hdr."runtime"                       &go.string."runtime"   �&go.string."runtime"   runtime  �,go.importpath.runtime.                       &go.string."runtime"   �Xgo.string.hdr."survive/server/gate/internal"                       Pgo.string."survive/server/gate/internal"   �Pgo.string."survive/server/gate/internal" @  :survive/server/gate/internal  �Vgo.importpath.survive/server/gate/internal.                       Pgo.string."survive/server/gate/internal"   �Dgo.string.hdr."survive/server/msg"                       <go.string."survive/server/msg"   �<go.string."survive/server/msg" 0  &survive/server/msg  �Bgo.importpath.survive/server/msg.                       <go.string."survive/server/msg"   �Hgo.string.hdr."survive/server/login"                       @go.string."survive/server/login"   �@go.string."survive/server/login" 0  *survive/server/login  �Fgo.importpath.survive/server/login.                       @go.string."survive/server/login"   �"runtime.zerovalue      ��go13ld

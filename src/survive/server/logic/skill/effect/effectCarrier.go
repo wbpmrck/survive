@@ -1,7 +1,7 @@
-package rule
+package effect
 import (
-	"survive/server/logic/skill/effect"
 	"survive/server/logic/rule/event"
+//	"fmt"
 )
 /*
 	代表一个可以被施加效果的单位
@@ -16,7 +16,7 @@ type EffectCarrier interface {
 		value:效果列表
 		一个效果可能被多次叠加，那么就会有多个在一个key的slice里
 	 */
-	GetAllEffects() map[string][]effect.Effect
+	GetAllEffects() map[string][]Effect
 	/*
 		给单位尝试加上一个效果。
 		该单位应该执行以下操作：
@@ -25,7 +25,7 @@ type EffectCarrier interface {
 		3、如果没有取消，则进行效果添加操作，调用effect.PutOn
 		4、PutOn成功
 	 */
-	PutOnEffect(effect effect.Effect,from EffectCarrier) bool
+	PutOnEffect(effect Effect,from EffectCarrier) bool
 	/*
 		注册一个处理函数,在实体 被施加效果前调用
 		该处理函数如果返回true,则实体会继续进行后续操作，如果返回false,则会让实体跳过本次操作(并触发 OnCancelPutOn)
@@ -48,7 +48,7 @@ type EffectCarrier interface {
 		2、此时只要有一个处理函数认为需要取消，则 Remove 返回false
 		3、如果没有取消，则 Remove 成功
 	 */
-	RemoveEffect(effect effect.Effect) bool
+	RemoveEffect(effect Effect) bool
 	/*
 		注册一个处理函数,在实体 被取消效果 前调用
 		该处理函数如果返回true,则实体会继续进行后续操作，如果返回false,则会让实体跳过本次操作(并触发 OnCancelRemove)
@@ -74,10 +74,10 @@ type EffectCarrierBase struct {
 	value:效果列表
 	一个效果可能被多次叠加，那么就会有多个在一个key的slice里
 	 */
-	allEffects map[string][]effect.Effect
+	allEffects map[string][]Effect
 }
 //获取所有效果
-func(self *EffectCarrierBase) GetAllEffects() map[string][]effect.Effect{
+func(self *EffectCarrierBase) GetAllEffects() map[string][]Effect{
 	return self.allEffects
 }
 /*
@@ -87,12 +87,12 @@ func(self *EffectCarrierBase) GetAllEffects() map[string][]effect.Effect{
 		2、此时只要有一个处理函数认为需要取消，则PutOn返回false
 		3、如果没有取消，则PutOn成功
 	 */
-func(self *EffectCarrierBase) PutOnEffect(effect effect.Effect,from,target EffectCarrier) bool{
+func(self *EffectCarrierBase) PutOnEffect(effect Effect,from EffectCarrier) bool{
 	onBeforePutOnResults:= self.Emit("Before-PutOnEffect",effect)
 
 	//只要有一个处理函数认为需要取消，则PutOn返回false
 	for _,r := range onBeforePutOnResults{
-		if r !=nil && r.IsCancel{
+		if r.IsCancel{
 			//执行cancel 阶段
 			self.Emit("Cancel-PutOnEffect",effect)
 
@@ -102,14 +102,14 @@ func(self *EffectCarrierBase) PutOnEffect(effect effect.Effect,from,target Effec
 	}
 
 	//没有被取消，则添加效果到自身效果集合
-	effectSlot,exist := self.allEffects[effect.GetName()]
+	_,exist := self.allEffects[effect.GetName()]
 	if !exist{
-		self.allEffects[effect.GetName()] = make([]effect.Effect,0)
-		effectSlot = self.allEffects[effect.GetName()]
+		self.allEffects[effect.GetName()] = make([]Effect,0)
 	}
 	//记录单位具有的效果
-	effectSlot = append(effectSlot,effect)
+	self.allEffects[effect.GetName()] = append(self.allEffects[effect.GetName()],effect)
 
+	//fmt.Printf("PutOnEffect: len(effectSlot):%v,all:%v ,name :%v \n",len(self.allEffects[effect.GetName()]),self.allEffects,effect.GetName())
 	//否则继续触发  after 阶段函数
 	self.Emit("After-PutOnEffect",effect)
 	return true
@@ -144,38 +144,41 @@ func(self *EffectCarrierBase)OnCancelPutOnEffect (handler *event.EventHandler) e
 	3、如果没有取消，则 Remove 成功
  */
 
-func(self *EffectCarrierBase)RemoveEffect(effect effect.Effect) bool{
+func(self *EffectCarrierBase)RemoveEffect(effect Effect) bool{
 
 	onBeforeRemoveResults:= self.Emit("Before-RemoveEffect",effect)
 
 	//只要有一个处理函数认为需要取消，则 RemoveEffect 返回false
 	for _,r := range onBeforeRemoveResults{
-		if r !=nil && r.IsCancel{
+		if r.IsCancel{
 			//执行cancel 阶段
 			self.Emit("Cancel-RemoveEffect",effect)
 
+			//fmt.Printf("RemoveEffect Cancel \n")
 			//返回(跳过 after 阶段)
 			return false
 		}
 	}
 	//没有被取消，则从自身效果集合移除该效果
-	effectSlot,exist := self.allEffects[effect.GetName()]
+	_,exist := self.allEffects[effect.GetName()]
+	//fmt.Printf("exist:%v,all:%v ,name :%v \n",exist,self.allEffects,effect.GetName())
 	if exist{
+		//fmt.Printf("根据效果类型，获取该类型的所有效果列表 \n")
 		//根据效果类型，获取该类型的所有效果列表
-		effectSlot = self.allEffects[effect.GetName()]
-
 		//查找列表里有无指定的效果对象
-		for i,_ := range effectSlot{
+		for i:= len(self.allEffects[effect.GetName()])-1;i>=0;i--{
 			//比对接口
-			if effectSlot[i] == effect{
+			if self.allEffects[effect.GetName()][i] == effect{
+				//fmt.Printf("移除对应的效果 \n")
 				//移除对应的效果
-				effectSlot = append(effectSlot[:i], effectSlot[i+1:]...)
+				self.allEffects[effect.GetName()] = append(self.allEffects[effect.GetName()][:i], self.allEffects[effect.GetName()][i+1:]...)
 
 				//触发  after 阶段函数
 				self.Emit("After-RemoveEffect",effect)
 				return true
 			}
 		}
+
 		return false
 	}else{
 		return false
@@ -208,6 +211,6 @@ func(self *EffectCarrierBase)OnCancelRemoveEffect (handler *event.EventHandler) 
 func NewEffectCarrier()*EffectCarrierBase{
 	return &EffectCarrierBase{
 		EventEmitterBase:event.NewEventEmitter(),
-		allEffects:make(map[string][]effect.Effect,0),
+		allEffects:make(map[string][]Effect,0),
 	}
 }
