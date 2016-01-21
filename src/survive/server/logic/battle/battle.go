@@ -1,6 +1,5 @@
 package battle
 import (
-	"survive/server/logic/character"
 	"survive/server/logic/player"
 )
 
@@ -8,12 +7,12 @@ import (
 //包括战场地形、战斗双方所有单位，以及战斗情况等信息
 type Battle struct {
 	Players map[string]*player.Player //参与战斗的玩家
-	PlayerCharacters map[string]map[string]*character.Character //key:player.Id value:玩家在这场战斗中投入的角色字典
+	PlayerCharacters map[string]map[string]*Warrior //key:player.Id value:玩家在这场战斗中投入的角色字典(key:角色id value,角色)
 	Field *BattleField
 }
 //获取某个玩家的敌对玩家(目前，除了自己都是敌人)
 func(this *Battle) GetEnemy(me *player.Player) []*player.Player{
-	enemy := make([]*player.Player)
+	enemy := make([]*player.Player,0)
 	for k,v:= range this.Players{
 		if k != me.Id{
 			enemy = append(enemy,v)
@@ -22,10 +21,10 @@ func(this *Battle) GetEnemy(me *player.Player) []*player.Player{
 	return enemy
 }
 //加入某个角色到战斗中
-func(this *Battle) AddCharacter(c *character.Character,*player.Player) bool{
-	_,exist:=this.Players[c.Id]
+func(this *Battle) AddCharacter(c *Warrior) bool{
+	_,exist:=this.Players[c.Player.Id]
 	if exist{
-		this.PlayerCharacters[c.Id] = c
+		this.PlayerCharacters[c.Player.Id][c.Id] = c
 		return true
 	}else{
 		return false
@@ -36,12 +35,12 @@ func(this *Battle) AddCharacter(c *character.Character,*player.Player) bool{
 func NewBattle( filedLen int,players ...*player.Player) *Battle{
 	b := &Battle{
 		Players:make(map[string]*player.Player),
-		PlayerCharacters:make(map[string]map[string]*character.Character),
+		PlayerCharacters:make(map[string]map[string]*Warrior),
 		Field:NewField(filedLen),
 	}
 	//初始化用户角色集合
 	for _,v:= range players{
-		b.PlayerCharacters[v.Id] = make(map[string]*character.Character)
+		b.PlayerCharacters[v.Id] = make(map[string]*Warrior)
 	}
 	return b
 }
