@@ -1,5 +1,8 @@
 package targetChoose
-import "survive/server/logic/character"
+import (
+	"survive/server/logic/skill/effect"
+	"survive/server/logic/skill"
+)
 
 //负责进行技能对象的选择
 //可以开发不同的chooser来搭配各种各样的技能
@@ -9,7 +12,13 @@ import "survive/server/logic/character"
 //如果targets=nil,err=false,则可能表示这个技能是一个非指向型技能
 //总之，只要err不为true,就可以调用 Install 来发动技能
 
-type TargetChooser func(from *character.Character,params ...interface{})(targets []*character.Character,error bool)
+
+type TargetChooser interface {
+	String() string
+	//目标选择器，知道一个技能的发出者，要寻找效果的承受者
+	Choose(from skill.SkillCarrier,params ...interface{})(targets []effect.EffectCarrier,error bool)
+}
+//type TargetChooser func(from *character.Character,params ...interface{})(targets []*character.Character,error bool)
 
 var allChooserFunc map[string]TargetChooser = make(map[string]TargetChooser)
 

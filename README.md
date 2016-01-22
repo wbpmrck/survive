@@ -4,6 +4,27 @@ this is a part-time project,it can be a funny game.
 
 ####DOING
 * 开发
+    * skill.go
+        * 技能包、技能项的设计(OK)
+        * 技能项的实现
+            * 实现技能包 (ing)
+            * 实现技能项 (ing)
+                * PluginStep:
+                    * 技能是主动还是被动触发，要看SkillItem里配置的Step
+                        * step里如果配置的是角色上线，且目标选择器是用户自己，那么基本上就是被动技能了
+                        * step里如果配置的是发起攻击后，且目选择器选择的是攻击对象，那么基本上就是主动技能
+                * 技能项里的目标选择器+效果列表，到后面要手动选取成对的配置好，再随机抽取
+                * 目标选择器，要能分为3大类，选择敌人的，选择友军的，和敌我不分的。
+                    * 每个choose通过配置项来决定选择对象。比如配置：只选择对象自身(适用于一些被动加成类效果)
+                    * chooser可以从技能发动者出发，根据不同的阶段，选取不同的目标，比如：
+                        * UserOnLine阶段：只能选择from(自己)
+                        * UserAfterAttack阶段：可以选择攻击对象，也可以以攻击对象为中心，选择其周围200单位长度的敌友(灵活可控)
+
+                * 技能项调用目标选择器得到目标，再对每1个目标putOn效果
+            * 定义skillCarrier接口、提供默认实现类 (ing)
+            * character内嵌默认实现类，具备技能使用能力 (ing)
+            * 给效果添加SetLevel方法，并对已有效果实现根据level修正效果属性的功能 (ing)
+        * targetChooser的实现、丰富
     * battle.go
         * 定义粗略的战斗流程
             * 战斗过程就是时间流逝的过程
@@ -16,10 +37,6 @@ this is a part-time project,it can be a funny game.
     * character.go / warrior.go
         * 实现更多的战斗过程代码
         * 编写模拟战斗测试代码
-    * skill.go
-        * 技能包、技能项的设计
-        * 技能项的实现
-        * targetChooser的实现、丰富
 
 
 ####TODO
