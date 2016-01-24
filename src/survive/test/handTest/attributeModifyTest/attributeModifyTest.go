@@ -42,7 +42,7 @@ func main(){
 	modifyEffect := effect.Create("AttributeModify")
 
 	//配置该效果要修正的属性值
-	modifyEffect.Config(attribute.STR,20.0)
+	modifyEffect.Config(attribute.STR,"力量",20.0)
 	//给角色2添加效果
 	modifyEffect.PutOn(warrior1,warrior2)
 
@@ -50,5 +50,17 @@ func main(){
 	if warrior2.GetAttr(attribute.STR).GetValue().Get() != 30{
 		panic(fmt.Sprintf("str must be 30,but now is %v",warrior2.GetAttr(attribute.STR).GetValue().Get()))
 	}
+	fmt.Printf("all attr is: %v \n",warrior2.GetAllAttr())
+
+
+	fmt.Printf("remove effect!---------- \n")
+	//移除效果
+	modifyEffect.Remove()
+
+	//检查属性
+	if warrior2.GetAttr(attribute.STR).GetValue().Get() != 10{
+		panic(fmt.Sprintf("str must be 10,but now is %v",warrior2.GetAttr(attribute.STR).GetValue().Get()))
+	}
 	fmt.Printf("all attr is: %v",warrior2.GetAllAttr())
+
 }
