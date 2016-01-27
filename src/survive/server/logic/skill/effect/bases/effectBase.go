@@ -1,8 +1,10 @@
 package bases
 import (
 	"survive/server/logic/dataStructure"
-	"survive/server/logic/rule"
 	"survive/server/logic/time"
+	"survive/server/logic/skill/effect"
+//	"fmt"
+	"survive/server/logic/dataStructure/attribute"
 )
 
 /*
@@ -14,24 +16,36 @@ import (
  */
 
 type EffectBase struct {
+	*attribute.AttributeCarrierBase
+	Holder effect.Effect //持有者
 	//效果的使用者，和受众
-	From, Target rule.EffectCarrier
+	From, Target effect.EffectCarrier
 	PutOnTime dataStructure.Time//效果生效时间
 	RemoveTime dataStructure.Time //效果结束时间
 	Alive bool //效果是否存在
 	Name string //效果名
+	Level int //效果等级
+}
+
+func(self *EffectBase) SetLevel(level int){
+	self.Level = level
+}
+//获取效果的名字
+func(self *EffectBase) String() string{
+//	return fmt.Sprintf("%v[%v]",self.Name,self.Alive)
+	return self.Holder.GetInfo()
 }
 //获取效果的名字
 func(self *EffectBase) GetName() string{
 	return self.Name
 }
 //尝试给对象添加一个效果
-func(self *EffectBase) PutOn(from, target rule.EffectCarrier) bool{
+func(self *EffectBase) PutOn(from, target effect.EffectCarrier) bool{
 	//如果效果还没有对象产生
 	if self.Target ==nil{
 
 		//判断接收对象是否可以放置本效果
-		isTargetReceive := self.Target.PutOnEffect(self)
+		isTargetReceive := target.PutOnEffect(self.Holder,from)
 
 		if isTargetReceive{
 			self.PutOnTime = time.GetNow()
@@ -55,7 +69,8 @@ func(self *EffectBase) Remove() bool{
 	if self.Alive && self.Target!=nil {
 
 		//判断接收对象是否可以取消本效果
-		isTargetRemove := self.Target.RemoveEffect(self)
+		isTargetRemove := self.Target.RemoveEffect(self.Holder)
+//		fmt.Printf("如果对象答应取消该效果:%v \n",isTargetRemove)
 
 		//如果对象答应取消该效果
 		if isTargetRemove {
@@ -79,11 +94,11 @@ func(self *EffectBase) IsAlive() bool{
 	return self.Alive
 }
 //获取效果的发出方
-func(self *EffectBase) GetFrom() rule.EffectCarrier {
+func(self *EffectBase) GetFrom() effect.EffectCarrier {
 	return self.From
 }
 //获取效果的作用方
-func(self *EffectBase) GetTarget() rule.EffectCarrier {
+func(self *EffectBase) GetTarget() effect.EffectCarrier {
 	return self.Target
 }
 //获取效果的开始作用时间
@@ -104,9 +119,11 @@ func(self *EffectBase) GetInfo() string{
 	return "EffectBase"
 }
 
-func NewBase(name string) *EffectBase{
+func NewBase(name string,holder effect.Effect) *EffectBase{
 	return &EffectBase{
 		Name:name,
 		Alive:false,
+		Holder:holder,
+		AttributeCarrierBase:attribute.NewAttributeCarrier(),
 	}
 }
