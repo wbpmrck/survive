@@ -1,5 +1,4 @@
 package event
-import "survive/server/logic/dataStructure"
 
 //表示一个处理函数的处理结果
 type HandleResult struct {

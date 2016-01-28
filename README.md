@@ -7,8 +7,18 @@ this is a part-time project,it can be a funny game.
     * 完整流程编写：
         * 开启一个time.Source,直接把时间片交给Arena
         * Arena 创建1个battle,然后battle开始处理战斗逻辑
+            * 订阅warrior的ComputedAttribute(行动顺序)的变化，重新排序
 
-
+    * ComputedAttribute.go (OK)
+        * 现在的模式是每次读取的时候都去计算
+        * 修改为：
+            * 订阅依赖属性的变化事件
+            * 内部记录脏数据标记
+                * 只要数据不脏，就直接返回
+                * 如果数据脏了，则重新计算
+    * attributeCarrier.go(OK)
+        * 添加事件机制，包括
+            * 属性值修改
 
     * targetChooser的实现、丰富(ing)
         * 测试各种chooser,此时可以使用简单的battle对象来测试

@@ -15,22 +15,31 @@ import (
 
 type TargetChooser interface {
 	String() string
+	GetName() string //每个chooser都有名字
+	Config(args ...interface{}) //可以给chooser设置一些参数
 	//目标选择器，知道一个技能的发出者，要寻找效果的承受者
-	Choose(from skill.SkillCarrier,params ...interface{})(targets []effect.EffectCarrier,error bool)
+	// 第二个参数:stepName,让选择器能够知道当前工作在什么阶段。选择器可以选择不工作，这往往是后台配置人员失误导致的
+	Choose(from skill.SkillCarrier,stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool)
 }
 //type TargetChooser func(from *character.Character,params ...interface{})(targets []*character.Character,error bool)
 
-var allChooserFunc map[string]TargetChooser = make(map[string]TargetChooser)
+//定义选择器创建工厂类型（这样就可以让不同的选择器对象注册工厂方法，方便动态根据 选择器名=>选择器对象）
+type ChooserFactory func() TargetChooser
 
-/**
-	注册目标选择函数
- */
-func Register(name string,chooser TargetChooser){
-	allChooserFunc[name] = chooser
+
+//存放所有的选择器工厂
+var allChooserFactorys map[string]ChooserFactory
+
+//注册一个选择器工厂
+func RegisterFactory(name string, chooserFactory ChooserFactory){
+	allChooserFactorys[name] = chooserFactory
 }
 
-//获取目标选择函数
-func Get(name string) TargetChooser{
-	return allChooserFunc[name]
+//根据选择器名，获取一个选择器对象
+func Create(name string) Effect{
+	return allChooserFactorys[name]()
 }
 
+func init(){
+	allChooserFactorys = make(map[string]ChooserFactory)
+}

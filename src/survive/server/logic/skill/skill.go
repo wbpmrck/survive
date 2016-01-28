@@ -27,7 +27,7 @@ func(self *Skill) Install(from SkillCarrier){
 	//初始化每个效果
 	if self.Items != nil && len(self.Items)>0{
 		for _,item := range self.Items{
-			item.Install(from)
+			item.Install()
 		}
 	}
 }
@@ -57,6 +57,12 @@ type SkillItem struct {
 func(self *SkillItem) String() string{
 	return fmt.Sprintf("作用时机:%v \r\n作用对象:%v \r\n效果项:%v",self.PluginStep.StepDesc,self.Chooser.String(),self.EffectItems)
 }
+func(self *SkillItem) AddEffect( e effect.Effect){
+	if self.EffectItems == nil{
+		self.EffectItems = make([]effect.Effect,1)
+	}
+	self.EffectItems = append(self.EffectItems,e)
+}
 func(self *SkillItem) Install(){
 	//在技能持有者身上订阅触发技能的事件
 	if self.SkillParent.Carrier != nil{
@@ -81,4 +87,24 @@ func(self *SkillItem) Install(){
 type Step struct {
 	StepName string //插入时机名称
 	StepDesc string //插入时机描述
+}
+
+//创建一个技能，创建后可以添加技能项，然后使用install来调用
+func NewSkill(name string,level int,exp int) *Skill{
+	return &Skill{
+		Name:name,
+		Level:level,
+		Exp:exp,
+		Items:make([]*SkillItem,0),
+	}
+}
+
+//创建一个技能项
+func NewSkillItem(parent *Skill,plugStep Step,choooser targetChoose.TargetChooser) *SkillItem{
+	return *SkillItem{
+		SkillParent:parent,
+		PluginStep:plugStep,
+		Chooser:choooser,
+		EffectItems:make([]effect.Effect,0),
+	}
 }

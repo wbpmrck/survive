@@ -1,5 +1,4 @@
 package event
-import "survive/server/logic/dataStructure"
 
 /*
 	* 支持通用的事件订阅、发布模型
@@ -11,7 +10,7 @@ import "survive/server/logic/dataStructure"
 //表示一个处理函数在事件处理宿主里的唯一标识，方便后续快速方便的取消订阅
 type HandlerId struct {
 	SlotKey string //事件所在的槽的名字
-	IndexInSlot int64 //事件所在槽的处理函数索引地址
+	IndexInSlot int //事件所在槽的处理函数索引地址
 }
 
 type EventEmitter interface {
@@ -31,10 +30,14 @@ type EventEmitterBase struct {
 func(self *EventEmitterBase) Emit(evtName string,params ...interface{}) []HandleResult{
 	//获取要发射的事件有多少处理函数
 	slot,exist := self.Slots[evtName]
-	result := make([]HandleResult)
+	result := make([]HandleResult,0,len(slot))
 	if exist{
 		for _,handler:= range slot{
-			result = append(result,handler.Func(params...))
+			isCancel,r := handler.Func(params ...)
+			result = append(result,HandleResult{
+				IsCancel:isCancel,
+				HandleResult:r,
+			})
 		}
 	}
 	return result
@@ -48,16 +51,17 @@ func(self *EventEmitterBase) Once(evtName string,handler *EventHandler) HandlerI
 
 //订阅事件处理函数
 func(self *EventEmitterBase) On(evtName string,handler *EventHandler) HandlerId{
-	slot,exist := self.Slots[evtName]
+	//如果该事件槽还未被订阅过，则创建事件槽
+	_,exist := self.Slots[evtName]
 	if !exist{
-		self.Slots[evtName] = make([]*EventHandler)
-		slot = self.Slots[evtName]
+		self.Slots[evtName] = make([]*EventHandler,0)
 	}
-	slot = append(slot,handler)
+	//在槽中添加对应事件处理函数
+	self.Slots[evtName] = append(self.Slots[evtName],handler)
 
 	return HandlerId{
 		SlotKey:evtName,
-		IndexInSlot:len(slot)-1,
+		IndexInSlot:len(self.Slots[evtName])-1,
 	}
 }
 

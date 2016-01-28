@@ -10,7 +10,7 @@ import (
 
 //Character可以embed这个类型，来实现战斗
 type Warrior struct {
-	Character *character.Character //战斗者所属的角色对象
+	*character.Character //战斗者 首先是一个角色
 
 	Size *attribute.Attribute //占据长度
 	NormalAttackSection *dataStructure.Section //普通攻击范围
@@ -42,68 +42,78 @@ type Warrior struct {
 	Position dataStructure.BattlePos //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
 }
 
+
+//创建一个战斗角色
 func NewWarrior(character *character.Character,normalAttackNature nature.Nature,size,attackFrom,attackTo,op,hp,ap,eachOpMoveDistance,maxAp float64) *Warrior{
 	w:=&Warrior{
 		Character:character,
 		Size:attribute.NewAttribute("size","大小",size),
 		NormalAttackSection:dataStructure.NewSection(attackFrom,attackTo),
 		NormalAttackNature:normalAttackNature,
-		EachOpMoveDistance:eachOpMoveDistance,
-		OP:op,
-		HP:hp,
-		AP:ap,
-		MaxAP:maxAp,
+		EachOpMoveDistance:attribute.NewAttribute("EachOpMoveDistance","每一个Op可以移动的距离长度",eachOpMoveDistance),
+		OP:attribute.NewAttribute("OP","当前行动点数",op),
+		HP:attribute.NewAttribute("HP","当前Hp",hp),
+		AP:attribute.NewAttribute("AP","当前怒气",ap),
+		MaxAP:attribute.NewAttribute("MaxAP","最大怒气",maxAp),
 	}
+	allAttr:= w.Character.GetAllAttr()
+	AGI := allAttr[attribute.AGI]
+	AWARE := allAttr[attribute.AWARE]
+	STR := allAttr[attribute.STR]
+	VIT := allAttr[attribute.VIT]
+	INT := allAttr[attribute.INT]
+	LUCK := allAttr[attribute.LUCK]
+	UNDERSTAND := allAttr[attribute.UNDERSTAND]
 	//计算属性：行动顺序
-	w.ActSeq = attribute.NewComputedAttribute("ActSeq","行动顺序",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base := 50
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+	w.ActSeq = attribute.NewComputedAttribute("ActSeq","行动顺序",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base := 50.0
+			agi :=dependencies[0].GetValue().Get()
+			aware :=dependencies[1].GetValue().Get()
 		return base +( 3*agi + 5.3*math.Floor(agi/7) ) - ( 0.2*aware + 0.5*math.Floor(aware/9) )
-	})
+	},AGI,AWARE)
 
 	//计算属性：最大行动点数
-	w.MaxOp = attribute.NewComputedAttribute("MaxOp","最大行动点数",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base := 128
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
+	w.MaxOp = attribute.NewComputedAttribute("MaxOp","最大行动点数",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base := 128.0
+			agi :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
 			return base +math.Floor( agi/3 ) + math.Floor( vit/9 )
-		})
+		},AGI,VIT)
 
 	//计算属性：行动点数恢复速度(每秒)
-	w.OPRecover= attribute.NewComputedAttribute("OPRecover","行动点数恢复速度",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base := 28
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
+	w.OPRecover= attribute.NewComputedAttribute("OPRecover","行动点数恢复速度",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base := 28.0
+			agi :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
 			return base +( 0.6*math.Floor( agi/3 )) + ( 0.2*math.Floor( vit/5 ))
-		})
+		},AGI,VIT)
 	//计算属性：普通攻击\技能等动作，需要消耗的Op数量
-	w.EachActionCostOP =attribute.NewComputedAttribute("EachActionCostOP","动作消耗的Op数量",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base := 128
-			agi :=dependencies[attribute.AGI].GetValue().Get()
+	w.EachActionCostOP =attribute.NewComputedAttribute("EachActionCostOP","动作消耗的Op数量",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base := 128.0
+			agi :=dependencies[0].GetValue().Get()
 			return base -math.Floor( agi/50 )
-		})
+		},AGI)
 	//计算属性：物理攻击力
-	w.AttackPhysical =attribute.NewComputedAttribute("AttackPhysical","物理攻击力",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			str :=dependencies[attribute.STR].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
+	w.AttackPhysical =attribute.NewComputedAttribute("AttackPhysical","物理攻击力",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			str :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
 			return (str + 11*math.Floor( str/9 )) + (0.3*vit + 2*math.Floor( vit/8 ))
-		})
+		},STR,VIT)
 	//计算属性：魔法攻击力
-	w.AttackMagical =attribute.NewComputedAttribute("AttackMagical","魔法攻击力",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			intel :=dependencies[attribute.INT].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
+	w.AttackMagical =attribute.NewComputedAttribute("AttackMagical","魔法攻击力",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			intel :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
 			return (intel + 9*math.Floor( intel/7 )) + (0.3*vit + 2*math.Floor( vit/8 ))
-		})
+		},INT,VIT)
 	//计算属性：物理暴击率
-	w.CriticalRatePhysical =attribute.NewComputedAttribute("CriticalRatePhysical","物理暴击率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.CriticalRatePhysical =attribute.NewComputedAttribute("CriticalRatePhysical","物理暴击率",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.15
 			str :=dependencies[attribute.STR].GetValue().Get()
 			agi :=dependencies[attribute.AGI].GetValue().Get()
@@ -115,8 +125,8 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：魔法暴击率
-	w.CriticalRateMagical =attribute.NewComputedAttribute("CriticalRateMagical","魔法暴击率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.CriticalRateMagical =attribute.NewComputedAttribute("CriticalRateMagical","魔法暴击率",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.15
 			intel :=dependencies[attribute.INT].GetValue().Get()
 			luk :=dependencies[attribute.LUCK].GetValue().Get()
@@ -126,8 +136,8 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：物理防御力
-	w.DefencePhysical =attribute.NewComputedAttribute("DefencePhysical","物理防御力",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.DefencePhysical =attribute.NewComputedAttribute("DefencePhysical","物理防御力",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			str :=dependencies[attribute.STR].GetValue().Get()
 			vit :=dependencies[attribute.VIT].GetValue().Get()
 			aware :=dependencies[attribute.AWARE].GetValue().Get()
@@ -135,8 +145,8 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 			return (math.Floor( (str+aware)/4 )) + (vit + 1.3*math.Floor( vit/3 ))
 		})
 	//计算属性：魔法防御力
-	w.DefenceMagical =attribute.NewComputedAttribute("DefenceMagical","魔法防御力",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.DefenceMagical =attribute.NewComputedAttribute("DefenceMagical","魔法防御力",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			intel :=dependencies[attribute.INT].GetValue().Get()
 			vit :=dependencies[attribute.VIT].GetValue().Get()
 			aware :=dependencies[attribute.AWARE].GetValue().Get()
@@ -144,8 +154,8 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 			return  0.3*vit+2.3* math.Floor( (intel+vit+aware)/4 )
 		})
 	//计算属性：物理闪避率
-	w.FleeRatePhysical =attribute.NewComputedAttribute("FleeRatePhysical","物理闪避率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.FleeRatePhysical =attribute.NewComputedAttribute("FleeRatePhysical","物理闪避率",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.05
 			str :=dependencies[attribute.STR].GetValue().Get()
 			vit :=dependencies[attribute.VIT].GetValue().Get()
@@ -157,8 +167,8 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：魔法闪避率
-	w.FleeRateMagical =attribute.NewComputedAttribute("FleeRateMagical","魔法闪避率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.FleeRateMagical =attribute.NewComputedAttribute("FleeRateMagical","魔法闪避率",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.05
 			agi :=dependencies[attribute.AGI].GetValue().Get()
 			intel :=dependencies[attribute.INT].GetValue().Get()
@@ -168,9 +178,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 			return base+(0.01*math.Floor( (luk/4 )) + ( 0.01 * math.Floor( (agi+intel+aware)/15 )))
 		})
 	//计算属性：物理命中率
-	w.HitRatePhysical =attribute.NewComputedAttribute("HitRatePhysical","物理命中率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base:=1
+	w.HitRatePhysical =attribute.NewComputedAttribute("HitRatePhysical","物理命中率",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base:=1.0
 			luk :=dependencies[attribute.LUCK].GetValue().Get()
 			aware :=dependencies[attribute.AWARE].GetValue().Get()
 
@@ -178,9 +188,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：魔法命中率
-	w.HitRateMagical =attribute.NewComputedAttribute("HitRateMagical","魔法命中率",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base:=1
+	w.HitRateMagical =attribute.NewComputedAttribute("HitRateMagical","魔法命中率",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base:=1.0
 			luk :=dependencies[attribute.LUCK].GetValue().Get()
 			intel :=dependencies[attribute.INT].GetValue().Get()
 
@@ -188,9 +198,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：最大生命值
-	w.MaxHp =attribute.NewComputedAttribute("MaxHp","最大生命值",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base:=120
+	w.MaxHp =attribute.NewComputedAttribute("MaxHp","最大生命值",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base:=120.0
 			str :=dependencies[attribute.STR].GetValue().Get()
 			vit :=dependencies[attribute.VIT].GetValue().Get()
 			intel :=dependencies[attribute.INT].GetValue().Get()
@@ -199,16 +209,16 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		})
 
 	//计算属性：生命值回复(每秒)
-	w.HpRecover =attribute.NewComputedAttribute("HpRecover","生命值回复",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
-			base:=1
+	w.HpRecover =attribute.NewComputedAttribute("HpRecover","生命值回复",0,
+		func(dependencies... attribute.AttributeLike) float64{
+			base:=1.0
 			vit :=dependencies[attribute.VIT].GetValue().Get()
 
 			return base+0.1*vit+(1*math.Floor(vit/5))
 		})
 	//计算属性：怒气值回复(每秒)
-	w.ApRecover =attribute.NewComputedAttribute("ApRecover","怒气值回复",0,w.Character.GetAllAttr(),
-		func(dependencies map[string]attribute.AttributeLike) float64{
+	w.ApRecover =attribute.NewComputedAttribute("ApRecover","怒气值回复",0,
+		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.1
 			aware :=dependencies[attribute.AWARE].GetValue().Get()
 
