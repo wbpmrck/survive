@@ -20,7 +20,7 @@ type Value struct {
 	adders []*Adder //保存该值当前正被哪些对象修正(方便这些对象回退对值的修正)
 }
 func (self *Value) String() string{
-	return fmt.Sprintf("{%v,%v,%v}",self.raw,self.totalAdditionVal,self.totalAdditionPercent)
+	return fmt.Sprintf("{%.3f,%.3f,%.3f => %.3f}",self.raw,self.totalAdditionVal,self.totalAdditionPercent,self.Get())
 }
 //根据传入的修改者，在本数值项上，撤消它所作的更改 .如果找到并且撤消更改成功，返回adder
 func (self *Value) UndoAllAddBy(who interface{}) *Adder{

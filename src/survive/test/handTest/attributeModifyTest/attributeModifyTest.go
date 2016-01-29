@@ -51,6 +51,7 @@ func main(){
 		panic(fmt.Sprintf("str must be 30,but now is %v",warrior2.GetAttr(attribute.STR).GetValue().Get()))
 	}
 	fmt.Printf("all attr is: %v \n",warrior2.GetAllAttr())
+	fmt.Printf("warrior2 is: %v \n",warrior2)
 
 
 	fmt.Printf("remove effect!---------- \n")
@@ -61,6 +62,7 @@ func main(){
 	if warrior2.GetAttr(attribute.STR).GetValue().Get() != 10{
 		panic(fmt.Sprintf("str must be 10,but now is %v",warrior2.GetAttr(attribute.STR).GetValue().Get()))
 	}
-	fmt.Printf("all attr is: %v",warrior2.GetAllAttr())
+	fmt.Printf("all attr is: %v \n",warrior2.GetAllAttr())
+	fmt.Printf("warrior2 is: %v \n",warrior2)
 
 }

@@ -74,7 +74,9 @@ func NewAttribute(name,desc string,rawValue float64) *Attribute{
 			totalAdditionPercent:0,
 			adders:make([]*Adder,0),
 		},
-	}
+	 	EventEmitterBase:event.NewEventEmitter(),
+
+	 }
 	a.val.attRef = a
-	return
+	return a
 }

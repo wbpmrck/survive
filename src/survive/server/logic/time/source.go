@@ -2,7 +2,7 @@ package time
 import (
 	"survive/server/logic/dataStructure"
 	"time"
-	"logProxy/logger"
+	"survive/server/logger"
 )
 
 /*
@@ -39,7 +39,7 @@ func(self *Source) Begin(){
 	logger.Infof("已创建帧间隔为 %v ms的ticker,准备进入时间生成主循环",self.GameTimeUnit.RealSpan / 1000000)
 
 	go func() {
-		for _ := range self.ticker.C {
+		for _ = range self.ticker.C {
 			tickCount++
 			if tickCount == printDuration{
 				logger.Infof("已产生%v个时间片",tickCount)

@@ -1,5 +1,4 @@
 package time
-import "survive/server/logic/dataStructure"
 
 /*
 	表示一个可以制造时间片的对象
