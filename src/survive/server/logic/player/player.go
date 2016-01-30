@@ -5,4 +5,12 @@ type Player struct {
 	UserName,Password string
 	VipLevel int
 }
+func NewPlayer(id,name,password string,vipLevel int) *Player{
+	return &Player{
+		Id:id,
+		UserName:name,
+		Password:password,
+		VipLevel:vipLevel,
+	}
+}
 

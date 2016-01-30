@@ -1,5 +1,5 @@
 .idea
-bin/log
+bin/**
 pkg
 node_modules
 junit-report

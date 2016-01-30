@@ -44,7 +44,7 @@ func(self *Pipe) AppendReceiver(rec Receiver){
 //注意每交一次，都更新自己的时间
 func(self *Pipe) Receive(ts dataStructure.TimeSpan){
 	//接到一个时间片，首先按照自己的倍率进行处理
-	ts.GameSpan = ts.RealSpan * self.Rate //得到自己认为“已经度过的时间”
+	ts.GameSpan = ts.RealSpan *  time.Duration(self.Rate) //得到自己认为“已经度过的时间”
 
 	self.TSRemain = self.TSRemain.Add(ts)
 	//只要还有剩余时间可以分发，就分发
@@ -63,7 +63,7 @@ func(self *Pipe) Receive(ts dataStructure.TimeSpan){
 func NewPipe(gameTimeUnitInMS time.Duration,timeRate int) *Pipe{
 	return &Pipe{
 		Rate:timeRate,
-		GameTimeUnit:dataStructure.NewMilliSecondSpan(gameTimeUnitInMS,timeRate),
+		GameTimeUnit:dataStructure.NewMilliSecondSpanWithGameSpan(gameTimeUnitInMS,timeRate),
 		TSRemain:dataStructure.NewMilliSecondSpan(0,timeRate),
 		Receivers:make([]Receiver,0),
 	}

@@ -8,6 +8,7 @@ this is a part-time project,it can be a funny game.
         * 开启一个time.Source,直接把时间片交给Arena
         * Arena 创建1个battle,然后battle开始处理战斗逻辑
             * 订阅warrior的ComputedAttribute(行动顺序)的变化，重新排序
+            * 处理角色添加到field里之后初始站位问题
 
     * ComputedAttribute.go (OK)
         * 现在的模式是每次读取的时候都去计算
