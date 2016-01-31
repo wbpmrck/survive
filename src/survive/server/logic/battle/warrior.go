@@ -5,8 +5,12 @@ import (
 	"survive/server/logic/dataStructure/attribute"
 	"survive/server/logic/character"
 	"math"
+	"fmt"
 )
 
+const (
+	EVENT_WARRIOR_DEAD ="dead"
+)
 
 //Character可以embed这个类型，来实现战斗
 type Warrior struct {
@@ -41,6 +45,18 @@ type Warrior struct {
 	BattleIn *Battle //所处的战场
 	Position dataStructure.BattlePos //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
 }
+//开始行动
+//接收一个时间片，开始决定自己的行动
+func(self *Warrior) Act(ts dataStructure.TimeSpan){
+	fmt.Printf("Warrior:[%v] ActSeq:[%v] receive time:%v \n",self.GetShowName(),self.ActSeq.GetValue(),ts)
+	/*
+		开始角色的行动
+	 */
+}
+
+
+
+
 
 
 //创建一个战斗角色
@@ -63,7 +79,7 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 	VIT := allAttr[attribute.VIT]
 	INT := allAttr[attribute.INT]
 	LUCK := allAttr[attribute.LUCK]
-	UNDERSTAND := allAttr[attribute.UNDERSTAND]
+//	UNDERSTAND := allAttr[attribute.UNDERSTAND]
 	//计算属性：行动顺序
 	w.ActSeq = attribute.NewComputedAttribute("ActSeq","行动顺序",0,
 		func(dependencies... attribute.AttributeLike) float64{
@@ -115,114 +131,114 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 	w.CriticalRatePhysical =attribute.NewComputedAttribute("CriticalRatePhysical","物理暴击率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.15
-			str :=dependencies[attribute.STR].GetValue().Get()
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			str :=dependencies[0].GetValue().Get()
+			agi :=dependencies[1].GetValue().Get()
+			vit :=dependencies[2].GetValue().Get()
+			luk :=dependencies[3].GetValue().Get()
+			aware :=dependencies[4].GetValue().Get()
 
 			return base+(0.02*math.Floor( luk/3 ))+(0.01*math.Floor( aware/5 )) + (0.01*math.Floor( (str-agi+vit)/30 ))
-		})
+		},STR,AGI,VIT,LUCK,AWARE)
 
 	//计算属性：魔法暴击率
 	w.CriticalRateMagical =attribute.NewComputedAttribute("CriticalRateMagical","魔法暴击率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.15
-			intel :=dependencies[attribute.INT].GetValue().Get()
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			intel :=dependencies[0].GetValue().Get()
+			luk :=dependencies[1].GetValue().Get()
+			aware :=dependencies[2].GetValue().Get()
 
 			return base+(0.02*math.Floor( luk/3 ))+(0.01*math.Floor( aware/5 )) +(0.01*math.Floor( intel/7 ))
-		})
+		},INT,LUCK,AWARE)
 
 	//计算属性：物理防御力
 	w.DefencePhysical =attribute.NewComputedAttribute("DefencePhysical","物理防御力",0,
 		func(dependencies... attribute.AttributeLike) float64{
-			str :=dependencies[attribute.STR].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			str :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
+			aware :=dependencies[2].GetValue().Get()
 
 			return (math.Floor( (str+aware)/4 )) + (vit + 1.3*math.Floor( vit/3 ))
-		})
+		},STR,VIT,AWARE)
 	//计算属性：魔法防御力
 	w.DefenceMagical =attribute.NewComputedAttribute("DefenceMagical","魔法防御力",0,
 		func(dependencies... attribute.AttributeLike) float64{
-			intel :=dependencies[attribute.INT].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			intel :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
+			aware :=dependencies[2].GetValue().Get()
 
 			return  0.3*vit+2.3* math.Floor( (intel+vit+aware)/4 )
-		})
+		},INT,VIT,AWARE)
 	//计算属性：物理闪避率
 	w.FleeRatePhysical =attribute.NewComputedAttribute("FleeRatePhysical","物理闪避率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.05
-			str :=dependencies[attribute.STR].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			str :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
+			agi :=dependencies[2].GetValue().Get()
+			luk :=dependencies[3].GetValue().Get()
+			aware :=dependencies[4].GetValue().Get()
 
 			return base+(0.01*math.Floor( (agi+luk)/4 )) + (0.01*math.Floor( aware/5 )) - ( 0.01 * math.Floor( (str+vit)/15 ))
-		})
+		},STR,VIT,AGI,LUCK,AWARE)
 
 	//计算属性：魔法闪避率
 	w.FleeRateMagical =attribute.NewComputedAttribute("FleeRateMagical","魔法闪避率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.05
-			agi :=dependencies[attribute.AGI].GetValue().Get()
-			intel :=dependencies[attribute.INT].GetValue().Get()
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			agi :=dependencies[0].GetValue().Get()
+			intel :=dependencies[1].GetValue().Get()
+			luk :=dependencies[2].GetValue().Get()
+			aware :=dependencies[3].GetValue().Get()
 
 			return base+(0.01*math.Floor( (luk/4 )) + ( 0.01 * math.Floor( (agi+intel+aware)/15 )))
-		})
+		},AGI,INT,LUCK,AWARE)
 	//计算属性：物理命中率
 	w.HitRatePhysical =attribute.NewComputedAttribute("HitRatePhysical","物理命中率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=1.0
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			luk :=dependencies[0].GetValue().Get()
+			aware :=dependencies[1].GetValue().Get()
 
 			return base+(0.01*math.Floor( (aware+luk)/4 ))
-		})
+		},LUCK,AWARE)
 
 	//计算属性：魔法命中率
 	w.HitRateMagical =attribute.NewComputedAttribute("HitRateMagical","魔法命中率",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=1.0
-			luk :=dependencies[attribute.LUCK].GetValue().Get()
-			intel :=dependencies[attribute.INT].GetValue().Get()
+			luk :=dependencies[0].GetValue().Get()
+			intel :=dependencies[1].GetValue().Get()
 
 			return base+(0.01*math.Floor( (intel+luk)/4 ))
-		})
+		},LUCK,INT)
 
 	//计算属性：最大生命值
 	w.MaxHp =attribute.NewComputedAttribute("MaxHp","最大生命值",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=120.0
-			str :=dependencies[attribute.STR].GetValue().Get()
-			vit :=dependencies[attribute.VIT].GetValue().Get()
-			intel :=dependencies[attribute.INT].GetValue().Get()
+			str :=dependencies[0].GetValue().Get()
+			vit :=dependencies[1].GetValue().Get()
+			intel :=dependencies[2].GetValue().Get()
 
 			return base+str+vit+(23*math.Floor(vit/3)) - 3*math.Floor(intel/3)
-		})
+		},STR,VIT,INT)
 
 	//计算属性：生命值回复(每秒)
 	w.HpRecover =attribute.NewComputedAttribute("HpRecover","生命值回复",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=1.0
-			vit :=dependencies[attribute.VIT].GetValue().Get()
+			vit :=dependencies[0].GetValue().Get()
 
 			return base+0.1*vit+(1*math.Floor(vit/5))
-		})
+		},VIT)
 	//计算属性：怒气值回复(每秒)
 	w.ApRecover =attribute.NewComputedAttribute("ApRecover","怒气值回复",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base:=0.1
-			aware :=dependencies[attribute.AWARE].GetValue().Get()
+			aware :=dependencies[0].GetValue().Get()
 
 			return base+0.05*aware+(0.25*math.Floor(aware/7))
-		})
+		},AWARE)
 	return w
 }

@@ -10,17 +10,6 @@ this is a part-time project,it can be a funny game.
             * 订阅warrior的ComputedAttribute(行动顺序)的变化，重新排序
             * 处理角色添加到field里之后初始站位问题
 
-    * ComputedAttribute.go (OK)
-        * 现在的模式是每次读取的时候都去计算
-        * 修改为：
-            * 订阅依赖属性的变化事件
-            * 内部记录脏数据标记
-                * 只要数据不脏，就直接返回
-                * 如果数据脏了，则重新计算
-    * attributeCarrier.go(OK)
-        * 添加事件机制，包括
-            * 属性值修改
-
     * targetChooser的实现、丰富(ing)
         * 测试各种chooser,此时可以使用简单的battle对象来测试
     * arena.go
@@ -40,6 +29,7 @@ this is a part-time project,it can be a funny game.
                 * 根据最新状态判断行动顺序
                 * 按照顺序先后，执行角色行动逻辑
         * 定义战斗判定阶段，考虑与技能、单位动作的衔接问题
+        * 考虑可随时间进行动作的effect,可能需要加入到battle的一个effect列表里
     * character.go / warrior.go
         * 实现更多的战斗过程代码
         * 编写模拟战斗测试代码
@@ -106,3 +96,14 @@ this is a part-time project,it can be a funny game.
         * 新增时间管道的概念：
             * 时间管道可以定义自己的时间流逝速度
             * 时间管道可以级联，可以把自己获得的时间片传递给下一阶段(获得的时间片，会以自己的倍率进行重设后交给后端)
+
+    * ComputedAttribute.go (OK)
+        * 现在的模式是每次读取的时候都去计算
+        * 修改为：
+            * 订阅依赖属性的变化事件
+            * 内部记录脏数据标记
+                * 只要数据不脏，就直接返回
+                * 如果数据脏了，则重新计算
+    * attributeCarrier.go(OK)
+        * 添加事件机制，包括
+            * 属性值修改
