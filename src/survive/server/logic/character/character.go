@@ -5,6 +5,7 @@ import (
 	"survive/server/logic/rule/event"
 	"survive/server/logic/skill/effect"
 	"survive/server/logic/skill"
+	"fmt"
 )
 
 type Character struct {
@@ -20,6 +21,13 @@ type Character struct {
 
 //	Attributes map[string]*attribute.Attribute //存储所有属性名  （不再单独实现，直接内嵌 AttributeCarrierBase）
 //	*battle.Warrior //内嵌“战斗者”类型，实现战斗能力
+}
+func(self *Character) SetPlayer(p *player.Player ){
+	self.Player = p
+}
+//获取角色展示时候的称呼
+func(self *Character) GetShowName()string{
+	return fmt.Sprintf("%v-%v",self.GivenName,self.FamilyName)
 }
 
 //创建一个角色对象

@@ -6,22 +6,30 @@ import (
 	"survive/server/logic/character"
 	"math"
 	"fmt"
+	"time"
 )
 
 const (
 	EVENT_WARRIOR_DEAD ="dead"
 )
 
+const (
+	WARRIOR_ALIVE 	int =0
+	WARRIOR_DEAD	int =1
+)
+
 //Character可以embed这个类型，来实现战斗
 type Warrior struct {
 	*character.Character //战斗者 首先是一个角色
 
+	Status int //状态
 	Size *attribute.Attribute //占据长度
 	NormalAttackSection *dataStructure.Section //普通攻击范围
 	NormalAttackNature nature.Nature //普通攻击属性
 	ActSeq *attribute.ComputedAttribute //行动顺序
 
-	OP *attribute.Attribute //行动点数
+	OP *attribute.RegeneratedAttribute //行动点数
+//	OP *attribute.Attribute //行动点数
 	MaxOp,OPRecover *attribute.ComputedAttribute //最大行动点数,行动点数恢复速度（每一个时间tick恢复量）
 
 	EachActionCostOP *attribute.ComputedAttribute //普通攻击\技能等动作，需要消耗的Op数量
@@ -33,11 +41,13 @@ type Warrior struct {
 	FleeRatePhysical,FleeRateMagical *attribute.ComputedAttribute //物理、魔法闪避率
 	HitRatePhysical,HitRateMagical *attribute.ComputedAttribute //物理、魔法命中率
 
-	HP *attribute.Attribute //生命值
+//	HP *attribute.Attribute //生命值
+	HP *attribute.RegeneratedAttribute //生命值
 	MaxHp *attribute.ComputedAttribute //最大生命值
 	HpRecover *attribute.ComputedAttribute //生命值回复速度
 
-	AP *attribute.Attribute //怒气值
+//	AP *attribute.Attribute //怒气值
+	AP *attribute.RegeneratedAttribute //怒气值
 	MaxAP *attribute.Attribute //最大怒气值
 	ApRecover *attribute.ComputedAttribute //怒气值回复速度
 
@@ -45,13 +55,42 @@ type Warrior struct {
 	BattleIn *Battle //所处的战场
 	Position dataStructure.BattlePos //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
 }
+
+//增减 hp
+func (self *Warrior) AddHP(v float64) {
+
+	//已经dead 的无法修改hp
+	if self.Status == WARRIOR_ALIVE {
+
+		cur := self.HP.GetValue().Get()
+		max := self.MaxHp.GetValue().Get()
+		//判断上限
+		if cur + v > max {
+			v = max - cur
+		}
+		self.HP.GetValue().AddRaw(v)
+		//判断死亡
+		if self.HP.GetValue().Get() < 0 {
+			self.Status = WARRIOR_DEAD
+			//对外抛送事件
+			self.Emit(EVENT_WARRIOR_DEAD)
+		}
+	}
+}
 //开始行动
 //接收一个时间片，开始决定自己的行动
 func(self *Warrior) Act(ts dataStructure.TimeSpan){
 	fmt.Printf("Warrior:[%v] ActSeq:[%v] receive time:%v \n",self.GetShowName(),self.ActSeq.GetValue(),ts)
 	/*
-		开始角色的行动
+		开始角色的行动：
+		* 先进行属性恢复
+		* 判断当前是否有能攻击到的对手,看战场上的敌人角色距离自己的位置，
+		* 判断行动点数是否足够
 	 */
+	self.HP.TimeAcquire(ts.GameSpan)
+	self.AP.TimeAcquire(ts.GameSpan)
+	self.OP.TimeAcquire(ts.GameSpan)
+
 }
 
 
@@ -67,9 +106,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		NormalAttackSection:dataStructure.NewSection(attackFrom,attackTo),
 		NormalAttackNature:normalAttackNature,
 		EachOpMoveDistance:attribute.NewAttribute("EachOpMoveDistance","每一个Op可以移动的距离长度",eachOpMoveDistance),
-		OP:attribute.NewAttribute("OP","当前行动点数",op),
-		HP:attribute.NewAttribute("HP","当前Hp",hp),
-		AP:attribute.NewAttribute("AP","当前怒气",ap),
+//		OP:attribute.NewAttribute("OP","当前行动点数",op),
+//		HP:attribute.NewAttribute("HP","当前Hp",hp),
+//		AP:attribute.NewAttribute("AP","当前怒气",ap),
 		MaxAP:attribute.NewAttribute("MaxAP","最大怒气",maxAp),
 	}
 	allAttr:= w.Character.GetAllAttr()
@@ -106,6 +145,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 			vit :=dependencies[1].GetValue().Get()
 			return base +( 0.6*math.Floor( agi/3 )) + ( 0.2*math.Floor( vit/5 ))
 		},AGI,VIT)
+
+	w.OP = attribute.NewRegeneratedAttribute("OP","当前行动点数",op,w.MaxOp.GetValue(),w.OPRecover.GetValue(),1*time.Second)
+
 	//计算属性：普通攻击\技能等动作，需要消耗的Op数量
 	w.EachActionCostOP =attribute.NewComputedAttribute("EachActionCostOP","动作消耗的Op数量",0,
 		func(dependencies... attribute.AttributeLike) float64{
@@ -232,6 +274,9 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 
 			return base+0.1*vit+(1*math.Floor(vit/5))
 		},VIT)
+
+	w.HP = attribute.NewRegeneratedAttribute("HP","当前Hp",hp,w.MaxHp.GetValue(),w.HpRecover.GetValue(),1*time.Second)
+
 	//计算属性：怒气值回复(每秒)
 	w.ApRecover =attribute.NewComputedAttribute("ApRecover","怒气值回复",0,
 		func(dependencies... attribute.AttributeLike) float64{
@@ -240,5 +285,6 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 
 			return base+0.05*aware+(0.25*math.Floor(aware/7))
 		},AWARE)
+	w.AP = attribute.NewRegeneratedAttribute("AP","当前怒气",ap,w.MaxAP.GetValue(),w.ApRecover.GetValue(),1*time.Second)
 	return w
 }

@@ -20,7 +20,7 @@ type Value struct {
 	adders []*Adder //保存该值当前正被哪些对象修正(方便这些对象回退对值的修正)
 }
 func (self *Value) String() string{
-	return fmt.Sprintf("{%.3f,%.3f,%.3f => %.3f}",self.raw,self.totalAdditionVal,self.totalAdditionPercent,self.Get())
+	return fmt.Sprintf("{%6.3f,%6.3f,%6.3f => %6.3f}",self.raw,self.totalAdditionVal,self.totalAdditionPercent,self.Get())
 }
 //根据传入的修改者，在本数值项上，撤消它所作的更改 .如果找到并且撤消更改成功，返回adder
 func (self *Value) UndoAllAddBy(who interface{}) *Adder{
@@ -35,7 +35,7 @@ func (self *Value) UndoAllAddBy(who interface{}) *Adder{
 		self.adders = append(self.adders[:i],self.adders[i+1:]...)
 		//发布属性变化事件
 		if self.attRef != nil{
-			self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+			self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef)
 		}
 	}
 	return adder
@@ -62,12 +62,22 @@ func (self *Value) SetRaw(v float64) {
 		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
 	}
 }
+//直接修改原始值(不需要进行值加成，不需要跟踪修改者，一次性修改)
+func (self *Value) AddRaw(v float64) {
+	self.raw += v
+	//发布属性变化事件
+	if self.attRef != nil{
+		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+	}
+}
 //注意，计算方式可以有2种，目前这一种，对属性修正类的技能更友好，不容易淘汰
 func (self *Value) Get() float64 {
 	return float64((self.raw + self.totalAdditionVal) * float64(1 + self.totalAdditionPercent))
 //	return float64(self.raw* float64(1 + self.totalAdditionPercent)+ self.totalAdditionVal)
 }
 
+
+//对数值进行加成修正，并跟踪修改者，可以做回退
 func (self *Value) Add(v float64,byWho interface{}) {
 	self.totalAdditionVal += v
 	//查看当前这个对象是否已经修改了自己
@@ -84,13 +94,17 @@ func (self *Value) Add(v float64,byWho interface{}) {
 		//否则累加修改数据
 		adder.AdditionVal +=v
 	}
+	fmt.Printf("self.attRef:%v \n",self.attRef)
 	//发布属性变化事件
 	if self.attRef != nil{
+		fmt.Printf("changed:%v \n",self)
 		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
 	}
 
 }
 
+
+//对数值进行加成修正，并跟踪修改者，可以做回退
 func (self *Value) AddByPercent(v float32,byWho interface{}) {
 	self.totalAdditionPercent += v
 	//查看当前这个对象是否已经修改了自己

@@ -66,6 +66,8 @@ func main(){
 	fmt.Println("-----再增加敏捷---------")
 	warriors[4].GetAttr(attribute.AGI).GetValue().Add(21,nil)
 
+	fmt.Println("-----减少hp---------")
+	warriors[4].AddHP(-50)
 	fmt.Println("-----Sleep---------")
-	systime.Sleep(5*systime.Second)
+	systime.Sleep(65*systime.Second)
 }
