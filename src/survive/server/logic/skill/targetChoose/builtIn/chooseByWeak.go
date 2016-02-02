@@ -2,7 +2,6 @@ package builtIn
 import (
 	"sort"
 	"survive/server/logic/skill/effect"
-	"survive/server/logic/skill"
 	"survive/server/logic/battle"
 	"fmt"
 )
@@ -40,7 +39,7 @@ func(self *ChooseByWeak) Config(args ...interface{}){
 }
 //选择器开始进行对象选择
 //按照敌人虚弱程度进行选择，通常
-func(self *ChooseByWeak) Choose(from skill.SkillCarrier,stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool) {
+func(self *ChooseByWeak) Choose(from interface{},stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool) {
 	from, ok := from.(battle.Warrior)
 	if ok{
 		battleIn := from.BattleIn
@@ -59,7 +58,7 @@ func(self *ChooseByWeak) Choose(from skill.SkillCarrier,stepName string,params .
 			//然后返回前n个
 			warriors := battleIn.PlayerCharactersList[firstEnemy.Id][0:n]
 
-			targets = make([]effect.EffectCarrier,len(warriors))
+			targets = make([]effect.EffectCarrier,0,len(warriors))
 
 			for id,_ := range warriors{
 				targets = append(targets,warriors[id])

@@ -50,6 +50,8 @@ this is a part-time project,it can be a funny game.
     
     > 使用javascript来描述业务逻辑
 
+* warrior.go
+    * 增加普通攻击的对象选择器，使得不同人物在普通攻击的时候，选择的对象不同
 ####DONE
 * 开发
     * skillBase.go

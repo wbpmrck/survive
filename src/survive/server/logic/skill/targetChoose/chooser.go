@@ -1,7 +1,6 @@
 package targetChoose
 import (
 	"survive/server/logic/skill/effect"
-	"survive/server/logic/skill"
 )
 
 //负责进行技能对象的选择
@@ -18,8 +17,11 @@ type TargetChooser interface {
 	GetName() string //每个chooser都有名字
 	Config(args ...interface{}) //可以给chooser设置一些参数
 	//目标选择器，知道一个技能的发出者，要寻找效果的承受者
-	// 第二个参数:stepName,让选择器能够知道当前工作在什么阶段。选择器可以选择不工作，这往往是后台配置人员失误导致的
-	Choose(from skill.SkillCarrier,stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool)
+	// 第二个参数:stepName,让选择器能够知道当前工作在什么阶段。
+	// stepName的作用：
+	// 	选择器可以选择不工作，这往往是后台配置人员失误导致的
+	//	有时候一个选择器，在不同阶段选取的对象也可以不一样
+	Choose(from interface{},stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool)
 }
 //type TargetChooser func(from *character.Character,params ...interface{})(targets []*character.Character,error bool)
 
@@ -36,7 +38,7 @@ func RegisterFactory(name string, chooserFactory ChooserFactory){
 }
 
 //根据选择器名，获取一个选择器对象
-func Create(name string) Effect{
+func Create(name string) TargetChooser{
 	return allChooserFactorys[name]()
 }
 
