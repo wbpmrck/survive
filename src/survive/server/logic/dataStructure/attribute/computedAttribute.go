@@ -53,7 +53,7 @@ func NewComputedAttribute(name,desc string,rawValue float64,computer RawComputer
 		for _,a:= range dependencies{
 			a.On(EVENT_VALUE_CHANGED,
 				//订阅所依赖属性的变化事件，第一个参数是变化的属性
-				event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
+				event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 //					fmt.Printf("[%s]订阅所依赖属性的变化事件 \n",c.GetName())
 					c.cachedRaw = false //只要有依赖项变化，就修改自己的脏标记
 					return

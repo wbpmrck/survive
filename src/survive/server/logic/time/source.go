@@ -36,7 +36,8 @@ func(self *Source) Begin(){
 	printDuration := 10000 //每个多少次打印一下
 	//建立一个计时器，计时器的轮休时间，就是单位时间片
 	self.ticker = time.NewTicker(self.GameTimeUnit.RealSpan)
-	logger.Infof("已创建帧间隔为 %v ms的ticker,准备进入时间生成主循环",self.GameTimeUnit.RealSpan / 1000000)
+//	logger.Infof("已创建帧间隔为 %d ms的ticker,准备进入时间生成主循环",self.GameTimeUnit.RealSpan / 1000000)
+	logger.Infof("已创建帧间隔为 %v 的ticker,准备进入时间生成主循环",self.GameTimeUnit.RealSpan)
 
 	go func() {
 		for _ = range self.ticker.C {

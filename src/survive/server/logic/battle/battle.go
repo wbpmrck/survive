@@ -7,6 +7,7 @@ import (
 	"github.com/wbpmrck/golibs/linkedList"
 	"survive/server/logic/dataStructure/attribute"
 	"fmt"
+	"survive/server/logic/skill/effect"
 )
 
 //战斗状态类型
@@ -48,6 +49,7 @@ func compareWarriorActSeq(old, new interface {}) bool {
 //包括战场地形、战斗双方所有单位，以及战斗情况等信息
 type Battle struct {
 	*event.EventEmitterBase //战斗也可能发射出各种事件
+	*effect.EffectCarrierBase //战斗是一个效果携带者（一些与具体对象无关的效果，就施加在战场上，比如AOE）
 	Desc string //战斗描述
 	Players map[string]*player.Player //参与战斗的玩家
 	PlayerCharacters map[string]map[string]*Warrior //key:player.Id value:玩家在这场战斗中投入的角色字典(key:角色id value,角色)
@@ -88,7 +90,7 @@ func(self *Battle) AddWarrior(c *Warrior) bool{
 //			fmt.Printf("after insert,ActSeq.len is %v/%v \n",self.ActSeq.Len(),self.ActSeq.Limit)
 			c.ActSeq.On(attribute.EVENT_VALUE_CHANGED,
 				//订阅所依赖属性的变化事件，第一个参数是变化的属性
-				event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
+				event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 						//先从行动顺序队列中移出
 //					fmt.Printf("before remove %v/%v \n",self.ActSeq.Len(),self.ActSeq.Limit)
 						self.ActSeq.Remove(cNode)
@@ -99,8 +101,16 @@ func(self *Battle) AddWarrior(c *Warrior) bool{
 					return
 				}))
 			//订阅角色的死亡事件，用于计算战斗结束条件
-			c.On(EVENT_WARRIOR_DEAD,event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
+			c.On(EVENT_WARRIOR_DEAD,event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 				self.judgeEnd()
+				return
+			}))
+
+			//订阅角色的日志输出事件，记录各种日志
+			c.On(EVENT_WARRIOR_NEW_ACTION_RECORD,event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
+				record := contextParams[0].(ActionRecord)
+				self.Report.AddRecord(record)
+
 				return
 			}))
 
@@ -163,8 +173,13 @@ func(self *Battle) Receive(ts dataStructure.TimeSpan){
 		 */
 		for oneWarrior := self.ActSeq.List.Front(); oneWarrior != nil; oneWarrior = oneWarrior.Next() {
 			w := oneWarrior.Value.(*Warrior)
-//			fmt.Printf("begin fight:[%v] ,it action seq is:[%v] \n",w.GetShowName(),w.ActSeq.GetValue().Get())
-			w.Act(ts)
+			//对角色进行时间片输入
+			w.Receive(ts)
+			//对角色进行动作，并将返回的操作日志记录
+//			records :=w.Receive(ts)
+//			if records!=nil && len(records)>0{
+//				self.Report.AddRecords(records)
+//			}
 		}
 
 		//最后:累加进行时间
@@ -185,12 +200,13 @@ func NewBattle( filedLen int,players ...*player.Player) *Battle{
 	b := &Battle{
 		Desc:"",
 		EventEmitterBase:event.NewEventEmitter(),
+		EffectCarrierBase:effect.NewEffectCarrier(),
 		Players:make(map[string]*player.Player),
 		PlayerCharacters:make(map[string]map[string]*Warrior),
 		PlayerCharactersList:make(map[string][]*Warrior),
 		Field:NewField(filedLen),
 		Status:STATUS_INIT,
-		Report:&BattleReport{},
+		Report:NewBattleReport(),
 		//创建行动顺序链表(上限为:玩家人数*10,就是每个玩家最多10个英雄参战)
 		ActSeq:linkedList.NewSortedLinkedList(len(players)*10, compareWarriorActSeq),
 	}

@@ -19,7 +19,8 @@ type EffectBase struct {
 	*attribute.AttributeCarrierBase
 	Holder effect.Effect //持有者
 	//效果的使用者，和受众
-	From, Target effect.EffectCarrier
+	From interface{}
+	Target effect.EffectCarrier
 	PutOnTime dataStructure.Time//效果生效时间
 	RemoveTime dataStructure.Time //效果结束时间
 	Alive bool //效果是否存在
@@ -40,7 +41,7 @@ func(self *EffectBase) GetName() string{
 	return self.Name
 }
 //尝试给对象添加一个效果
-func(self *EffectBase) PutOn(from, target effect.EffectCarrier) bool{
+func(self *EffectBase) PutOn(from interface{}, target effect.EffectCarrier) bool{
 	//如果效果还没有对象产生
 	if self.Target ==nil{
 
@@ -94,7 +95,8 @@ func(self *EffectBase) IsAlive() bool{
 	return self.Alive
 }
 //获取效果的发出方
-func(self *EffectBase) GetFrom() effect.EffectCarrier {
+func(self *EffectBase) GetFrom() interface{} {
+
 	return self.From
 }
 //获取效果的作用方

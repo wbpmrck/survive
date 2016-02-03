@@ -3,6 +3,13 @@ import (
 	"survive/server/logic/rule/event"
 //	"fmt"
 )
+
+
+const (
+	EVENT_BEFORE_PUT_ON_EFFECT	string ="Before-PutOnEffect"
+	EVENT_CANCEL_PUT_ON_EFFECT	string ="Cancel-PutOnEffect"
+	EVENT_AFTER_PUT_ON_EFFECT	string ="After-PutOnEffect"
+)
 /*
 	代表一个可以被施加效果的单位
  */
@@ -25,7 +32,7 @@ type EffectCarrier interface {
 		3、如果没有取消，则进行效果添加操作，调用effect.PutOn
 		4、PutOn成功
 	 */
-	PutOnEffect(effect Effect,from EffectCarrier) bool
+	PutOnEffect(effect Effect,from interface{}) bool
 	/*
 		注册一个处理函数,在实体 被施加效果前调用
 		该处理函数如果返回true,则实体会继续进行后续操作，如果返回false,则会让实体跳过本次操作(并触发 OnCancelPutOn)
@@ -87,14 +94,14 @@ func(self *EffectCarrierBase) GetAllEffects() map[string][]Effect{
 		2、此时只要有一个处理函数认为需要取消，则PutOn返回false
 		3、如果没有取消，则PutOn成功
 	 */
-func(self *EffectCarrierBase) PutOnEffect(effect Effect,from EffectCarrier) bool{
-	onBeforePutOnResults:= self.Emit("Before-PutOnEffect",effect)
+func(self *EffectCarrierBase) PutOnEffect(effect Effect,from interface{}) bool{
+	onBeforePutOnResults:= self.Emit(EVENT_BEFORE_PUT_ON_EFFECT,effect)
 
 	//只要有一个处理函数认为需要取消，则PutOn返回false
 	for _,r := range onBeforePutOnResults{
 		if r.IsCancel{
 			//执行cancel 阶段
-			self.Emit("Cancel-PutOnEffect",effect)
+			self.Emit(EVENT_CANCEL_PUT_ON_EFFECT,effect)
 
 			//返回(跳过 after 阶段)
 			return false
@@ -111,7 +118,7 @@ func(self *EffectCarrierBase) PutOnEffect(effect Effect,from EffectCarrier) bool
 
 	//fmt.Printf("PutOnEffect: len(effectSlot):%v,all:%v ,name :%v \n",len(self.allEffects[effect.GetName()]),self.allEffects,effect.GetName())
 	//否则继续触发  after 阶段函数
-	self.Emit("After-PutOnEffect",effect)
+	self.Emit(EVENT_AFTER_PUT_ON_EFFECT,effect)
 	return true
 }
 /*
@@ -119,20 +126,20 @@ func(self *EffectCarrierBase) PutOnEffect(effect Effect,from EffectCarrier) bool
 	该处理函数如果返回true,则实体会继续进行后续操作，如果返回false,则会让实体跳过本次操作(并触发 OnCancelPutOn)
 */
 func(self *EffectCarrierBase) OnBeforePutOnEffect(handler *event.EventHandler) event.HandlerId{
-	return self.On("Before-PutOnEffect",handler)
+	return self.On(EVENT_BEFORE_PUT_ON_EFFECT,handler)
 }
 /*
 	注册一个处理函数，在实体 被释放效果 之后调用
  */
 func(self *EffectCarrierBase) OnAfterPutOnEffect (handler *event.EventHandler) event.HandlerId{
-	return self.On("After-PutOnEffect",handler)
+	return self.On(EVENT_AFTER_PUT_ON_EFFECT,handler)
 }
 /*
 	实体的 效果施放动作 被取消之后触发一次
  */
 
 func(self *EffectCarrierBase)OnCancelPutOnEffect (handler *event.EventHandler) event.HandlerId{
-	return self.On("Cancel-PutOnEffect",handler)
+	return self.On(EVENT_CANCEL_PUT_ON_EFFECT,handler)
 }
 
 

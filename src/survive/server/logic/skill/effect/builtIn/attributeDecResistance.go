@@ -33,13 +33,13 @@ type AttributeDecResistance struct {
 }
 
 //效果施加
-func(self *AttributeDecResistance) PutOn(from, target effect.EffectCarrier) bool{
+func(self *AttributeDecResistance) PutOn(from interface{}, target effect.EffectCarrier) bool{
 	//如果该效果可以被添加到对象上
 	if self.EffectBase.PutOn(from,target){
 
 		//功能1：对于在本效果释放之后再释放的效果，直接进行抵抗
 		//注册一个处理事件，到对象的 效果生效前 阶段
-		self.HandlerId = target.OnBeforePutOnEffect(event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
+		self.HandlerId = target.OnBeforePutOnEffect(event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 			isCancel = false //默认不取消
 
 			//看看即将生效的效果，是不是 "属性修正效果"

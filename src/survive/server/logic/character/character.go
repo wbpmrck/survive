@@ -39,6 +39,7 @@ func NewCharacter(id string,givenName,familyName string,attributes map[string]*a
 		EventEmitterBase:event.NewEventEmitter(),
 		AttributeCarrierBase:attribute.NewAttributeCarrier(),
 		EffectCarrierBase:effect.NewEffectCarrier(),
+		SkillCarrierBase:skill.NewSkillCarrierBase(),
 	}
 	return c
 }

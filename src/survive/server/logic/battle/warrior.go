@@ -7,16 +7,35 @@ import (
 	"math"
 	"fmt"
 	"time"
+	"survive/server/logic/rule/event"
+	"survive/server/logic/skill"
+	"survive/server/logic/skill/targetChoose"
 )
 
+//事件
 const (
-	EVENT_WARRIOR_DEAD ="dead"
+	EVENT_WARRIOR_DEAD ="dead" //死亡
+
+//	EVENT_WARRIOR_NEW_ACTION_RECORD ="NEW_ACTION_RECORD" //产生了新的动作日志
+
+	EVENT_WARRIOR_SKILL_CHOOSE ="SKILL_CHOOSE" //技能动作选择阶段(该阶段决定了用户是否能主动发出某个技能)
+
+	EVENT_WARRIOR_NORMAL_ATTACK_PRE ="NORMAL_ATTACK_PRE" //普通攻击动作阶段（前）
+	EVENT_WARRIOR_NORMAL_ATTACK_AFTER ="NORMAL_ATTACK_AFTER" //普通攻击动作阶段（后）
+
 )
 
+//状态
 const (
-	WARRIOR_ALIVE 	int =0
-	WARRIOR_DEAD	int =1
+	WARRIOR_INACTIVE	int =0 //未激活的(从未获得过时间片)
+	WARRIOR_ACTIVE 		int =1 //激活的
+	WARRIOR_DEAD		int =2 //死亡的
 )
+
+//规则
+//const (
+
+//)
 
 //Character可以embed这个类型，来实现战斗
 type Warrior struct {
@@ -26,6 +45,7 @@ type Warrior struct {
 	Size *attribute.Attribute //占据长度
 	NormalAttackSection *dataStructure.Section //普通攻击范围
 	NormalAttackNature nature.Nature //普通攻击属性
+	NormalAttackChooser targetChoose.TargetChooser //普通攻击的时候，chooser决定攻击对象
 	ActSeq *attribute.ComputedAttribute //行动顺序
 
 	OP *attribute.RegeneratedAttribute //行动点数
@@ -54,13 +74,33 @@ type Warrior struct {
 	//下面是在战斗中才有意义的一些属性
 	BattleIn *Battle //所处的战场
 	Position dataStructure.BattlePos //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
+
+	//其他
+
+
 }
 
+////向外输出日志事件
+//func(self *Warrior) FireNewRecord(r ActionRecord){
+//	self.Emit(EVENT_WARRIOR_NEW_ACTION_RECORD,r)
+//}
+
+//激活
+func (self *Warrior) Active(){
+	fmt.Printf("开始激活[%s] \n",self)
+	self.Status = WARRIOR_ACTIVE
+	//初始化其他事项:
+	//1.技能
+	for _,v := range self.GetAllSkills(){
+		fmt.Printf("-->开始安装技能[%s] \n",v.GetInfo())
+		v.Install(self)
+	}
+}
 //增减 hp
 func (self *Warrior) AddHP(v float64) {
 
 	//已经dead 的无法修改hp
-	if self.Status == WARRIOR_ALIVE {
+	if self.Status == WARRIOR_ACTIVE {
 
 		cur := self.HP.GetValue().Get()
 		max := self.MaxHp.GetValue().Get()
@@ -77,20 +117,155 @@ func (self *Warrior) AddHP(v float64) {
 		}
 	}
 }
+
+//进行移动。
+//目前移动逻辑很简单，移动到能够让对方角色进入攻击范围的位置
+func (self *Warrior)MoveAction(){
+
+}
+
+//尝试进行普通攻击，返回是否成功进行攻击动作的标记
+//PS:不管是否命中，只要发动了攻击动作，就视为 true
+func (self *Warrior)NormalAttackAction() bool{
+	attacked := false
+	//先获取普通攻击的对象，如果有，进行普通攻击
+	targets := self.getNormalAttackTargets()
+	if len(targets>0){
+		attacked = true
+		//对每一个对象，进行攻击
+		for _,t := range targets{
+			self.attack(t)
+		}
+		//如果成功，则扣除动作点数
+		self.OP.GetValue().AddRaw(self.EachActionCostOP.GetValue().Get())
+	}
+	return attacked
+}
+//对某个对象进行普通攻击操作
+func (self *Warrior) attack(target *Warrior){
+
+}
+
+//获取当前普通攻击的对象
+func (self *Warrior)getNormalAttackTargets()[]*Warrior{
+	warriorTargets := make([]*Warrior,0)
+	if self.NormalAttackChooser != nil{
+		targets,err := self.NormalAttackChooser.Choose(self,EVENT_WARRIOR_NORMAL_ATTACK_PRE)
+
+		//如果获取对象成功
+		if !err && targets!= nil && len(targets)>0{
+			for _,target := range targets{
+
+				//尝试把对象转化为warrior
+				w,errTrans := target.(*Warrior)
+				if errTrans{
+					warriorTargets = append(warriorTargets,w)
+				}
+			}
+		}
+	}
+	return warriorTargets
+}
+
+//执行技能动作阶段，并返回成功释放的技能项列表(没有的话为0)
+//PS:不管是否命中，只要发动了技能，就视为 有技能释放结果
+func (self *Warrior)SkillAction() []*skill.SkillItem{
+	skillItems := make([]*skill.SkillItem,0)
+	//遍历所有技能动作钩子，执行并拿到执行结果，返回
+	results := self.Emit(EVENT_WARRIOR_SKILL_CHOOSE)
+	if len(results)>0{
+		for _,r := range results{
+			if r.HandleResult!=nil{
+				skillItems = append(skillItems,r.HandleResult.(*skill.SkillItem))
+			}
+		}
+		//如果释放成功，则扣除动作点数
+		self.OP.GetValue().AddRaw(self.EachActionCostOP.GetValue().Get())
+	}
+
+	return skillItems
+}
+/*
+	订阅阶段事件
+	阶段：选择动作
+	HandleFunc返回值含义
+		isCancel:
+			true: 无意义
+			false:无意义
+		handleResult interface{}:
+			类型：*SkillItem
+			含义：代表被释放成功的技能项
+ */
+func (self *Warrior) OnSkillChoose(handler *event.EventHandler) event.HandlerId{
+	return self.On(EVENT_WARRIOR_SKILL_CHOOSE,handler)
+}
+
+
+
+
+
+
+/*
+	角色进行动作
+	1.通过OP的概念，把角色和时间进行了隔离，角色只需要行动到OP点数不够为止，而不再需要关注时间的概念
+ */
+func(self *Warrior) Act(){
+	/*
+		判断行动点数是否足够进行一次动作
+	 */
+	canAction := self.OP.GetValue().Get()>self.EachActionCostOP.GetValue().Get()
+
+	//如果是，则进行动作选择阶段
+	if canAction{
+
+		/*
+			执行阶段：【技能选择】
+			1.在技能选择阶段,每个技能都可以通过在这个阶段注册事件，并以一定的概率释放自己
+			2.一旦技能选择阶段有技能被释放，那么本次普通攻击阶段就会跳过
+		 */
+		releasedSkillItemRecords := self.SkillAction()
+		//没有技能被释放
+		if len(releasedSkillItemRecords)<1{
+			//进行普通攻击
+			attackRecords := self.NormalAttackAction()
+
+			//如果无法普通攻击
+			if !attackRecords {
+				//尝试移动
+				self.MoveAction()
+				//移动过后，重新执行Action
+				self.Act()
+			}
+		}
+	}else{
+		//如果无法完成一次动作(攻击、技能等)，则尝试移动
+		self.MoveAction()
+	}
+	return
+}
+
 //开始行动
 //接收一个时间片，开始决定自己的行动
-func(self *Warrior) Act(ts dataStructure.TimeSpan){
+//每次接收时间片，要返回一个动作列表，表示这次行动得到的反馈结果
+func(self *Warrior) Receive(ts dataStructure.TimeSpan){
 	fmt.Printf("Warrior:[%v] ActSeq:[%v] receive time:%v \n",self.GetShowName(),self.ActSeq.GetValue(),ts)
+
+	//如果是非激活状态，则进行激活
+	if self.Status == WARRIOR_INACTIVE{
+		self.Active()
+	}
+
 	/*
-		开始角色的行动：
-		* 先进行属性恢复
-		* 判断当前是否有能攻击到的对手,看战场上的敌人角色距离自己的位置，
-		* 判断行动点数是否足够
+		属性回复
 	 */
 	self.HP.TimeAcquire(ts.GameSpan)
 	self.AP.TimeAcquire(ts.GameSpan)
 	self.OP.TimeAcquire(ts.GameSpan)
 
+	/*
+		开始角色的行动：
+	 */
+	return self.Act()
 }
 
 
@@ -99,12 +274,14 @@ func(self *Warrior) Act(ts dataStructure.TimeSpan){
 
 
 //创建一个战斗角色
-func NewWarrior(character *character.Character,normalAttackNature nature.Nature,size,attackFrom,attackTo,op,hp,ap,eachOpMoveDistance,maxAp float64) *Warrior{
+func NewWarrior(character *character.Character,normalAttackNature nature.Nature,normalAttackChooser targetChoose.TargetChooser,size,attackFrom,attackTo,op,hp,ap,eachOpMoveDistance,maxAp float64) *Warrior{
 	w:=&Warrior{
 		Character:character,
+		Status:WARRIOR_INACTIVE,
 		Size:attribute.NewAttribute("size","大小",size),
 		NormalAttackSection:dataStructure.NewSection(attackFrom,attackTo),
 		NormalAttackNature:normalAttackNature,
+		NormalAttackChooser:normalAttackChooser,
 		EachOpMoveDistance:attribute.NewAttribute("EachOpMoveDistance","每一个Op可以移动的距离长度",eachOpMoveDistance),
 //		OP:attribute.NewAttribute("OP","当前行动点数",op),
 //		HP:attribute.NewAttribute("HP","当前Hp",hp),

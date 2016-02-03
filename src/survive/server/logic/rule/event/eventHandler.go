@@ -3,11 +3,11 @@ package event
 //表示一个处理函数的处理结果
 type HandleResult struct {
 	IsCancel bool //是否进行下一个阶段的处理（这里的下一阶段，是由eventEmitter决定的）
-	HandleResult string
+	HandleResult interface{}
 }
 //事件处理函数，第一个版本简单做，所以不支持异步的处理
 //type HandleFunc func(time *dataStructure.Time, contextParams ...interface{}) (isCancel bool,handleResult string)
-type HandleFunc func(contextParams ...interface{}) (isCancel bool,handleResult string)
+type HandleFunc func(contextParams ...interface{}) (isCancel bool,handleResult interface{})
 /*
 	基础的事件处理器
 

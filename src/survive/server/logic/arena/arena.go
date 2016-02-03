@@ -23,7 +23,7 @@ func(self *Arena) AddBattle(bt *battle.Battle){
 	self.AppendReceiver(bt)
 	//如果battle已经结束，则移除出
 	fmt.Printf("如果battle已经结束，则移除出 \n")
-	bt.On(battle.EVENT_END,event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult string){
+	bt.On(battle.EVENT_END,event.NewEventHandler(func (contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 
 		fmt.Printf("len is %v \n",len(contextParams))
 		endBattle := contextParams[0].(*battle.Battle)

@@ -15,10 +15,10 @@ type Effect interface {
 	GetRemoveTime() dataStructure.Time//效果结束时间
 //	PutOn(time *dataStructure.Time,from, target *character) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
 //	PutOn(time *dataStructure.Time,from, target EffectCarrier) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
-	PutOn(from, target EffectCarrier) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
+	PutOn(from interface{}, target EffectCarrier) bool //产生效果，一个从from发动，丢给target的动作. 如果该对象无法被放置该效果，则返回false
 	Config(args ...interface{}) //技能在组合效果的时候，可以给效果设置一些参数
 	IsAlive() bool //每个效果都要记录自己是否仍然存活
-	GetFrom() EffectCarrier //获取效果的发出方
+	GetFrom() interface{} //获取效果的发出方
 //	GetFrom() *character.Character //获取效果的发出方
 	GetTarget() EffectCarrier //获取效果的作用方
 //	GetTarget() *character.Character //获取效果的作用方

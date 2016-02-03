@@ -29,6 +29,14 @@ func NewMilliSecondSpan(realSpanInMS time.Duration,rate int) TimeSpan{
 	realSpanInMicro := realSpanInMS * 1000000
 	return TimeSpan{
 		RealSpan:realSpanInMicro,
-		GameSpan:realSpanInMicro*rate,
+		GameSpan:realSpanInMicro* time.Duration(rate),
+	}
+}
+//输入一个游戏世界中流逝的时间(毫秒为单位)，产生一个包含游戏流逝时间的时间片
+func NewMilliSecondSpanWithGameSpan(gameSpanInMS time.Duration,rate int) TimeSpan{
+	gameSpanInMicro := gameSpanInMS * 1000000
+	return TimeSpan{
+		RealSpan:gameSpanInMicro / time.Duration(rate),
+		GameSpan:gameSpanInMicro,
 	}
 }

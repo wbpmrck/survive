@@ -20,7 +20,7 @@ type AttributeModify struct {
 }
 
 //效果施加
-func(self *AttributeModify) PutOn(from, target effect.EffectCarrier) bool{
+func(self *AttributeModify) PutOn(from interface{}, target effect.EffectCarrier) bool{
 	//如果该效果可以被添加到对象上
 	if self.EffectBase.PutOn(from,target){
 		t := target.(attribute.AttributeCarrier)

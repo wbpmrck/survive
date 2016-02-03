@@ -35,7 +35,7 @@ func (self *Value) UndoAllAddBy(who interface{}) *Adder{
 		self.adders = append(self.adders[:i],self.adders[i+1:]...)
 		//发布属性变化事件
 		if self.attRef != nil{
-			self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef)
+			self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef,self)
 		}
 	}
 	return adder
@@ -59,7 +59,7 @@ func (self *Value) SetRaw(v float64) {
 	self.raw = v
 	//发布属性变化事件
 	if self.attRef != nil{
-		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+		self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef,self)
 	}
 }
 //直接修改原始值(不需要进行值加成，不需要跟踪修改者，一次性修改)
@@ -67,7 +67,7 @@ func (self *Value) AddRaw(v float64) {
 	self.raw += v
 	//发布属性变化事件
 	if self.attRef != nil{
-		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+		self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef,self)
 	}
 }
 //注意，计算方式可以有2种，目前这一种，对属性修正类的技能更友好，不容易淘汰
@@ -98,7 +98,7 @@ func (self *Value) Add(v float64,byWho interface{}) {
 	//发布属性变化事件
 	if self.attRef != nil{
 		fmt.Printf("changed:%v \n",self)
-		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+		self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef,self)
 	}
 
 }
@@ -123,7 +123,7 @@ func (self *Value) AddByPercent(v float32,byWho interface{}) {
 	}
 	//发布属性变化事件
 	if self.attRef != nil{
-		self.attRef.Emit(EVENT_VALUE_CHANGED,self)
+		self.attRef.Emit(EVENT_VALUE_CHANGED,self.attRef,self)
 	}
 }
 
