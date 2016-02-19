@@ -9,7 +9,7 @@ import (
  */
 
 type Pipe struct{
-	Rate int //时间比例( 现实时间流失 * rate = 游戏世界流失 )
+	Rate float32 //时间比例( 现实时间流失 * rate = 游戏世界流失 )
 	Now dataStructure.Time //当前管道内的时刻
 	GameTimeUnit dataStructure.TimeSpan //管道的输出时间片的长度单位
 	TSRemain dataStructure.TimeSpan //管道目前还剩余的时间片
@@ -44,7 +44,9 @@ func(self *Pipe) AppendReceiver(rec Receiver){
 //注意每交一次，都更新自己的时间
 func(self *Pipe) Receive(ts dataStructure.TimeSpan){
 	//接到一个时间片，首先按照自己的倍率进行处理
-	ts.GameSpan = ts.RealSpan *  time.Duration(self.Rate) //得到自己认为“已经度过的时间”
+//	ts.GameSpan = ts.RealSpan *  time.Duration(self.Rate) //得到自己认为“已经度过的游戏时间”
+	ts.GameSpan = time.Duration(float32(ts.RealSpan) * self.Rate) //得到自己认为“已经度过的游戏时间”
+//	ts.RealSpan = ts.RealSpan *  time.Duration(self.Rate) //得到自己认为“已经度过的现实时间”
 
 	self.TSRemain = self.TSRemain.Add(ts)
 	//只要还有剩余时间可以分发，就分发
@@ -60,7 +62,7 @@ func(self *Pipe) Receive(ts dataStructure.TimeSpan){
 	}
 }
 
-func NewPipe(gameTimeUnitInMS time.Duration,timeRate int) *Pipe{
+func NewPipe(gameTimeUnitInMS time.Duration,timeRate float32) *Pipe{
 	return &Pipe{
 		Rate:timeRate,
 		GameTimeUnit:dataStructure.NewMilliSecondSpanWithGameSpan(gameTimeUnitInMS,timeRate),
