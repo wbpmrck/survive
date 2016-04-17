@@ -7,16 +7,16 @@ import (
 )
 
 //定义interface{},并实现sort.Interface接口的三个方法
-type CharacterSlice []*battle.Warrior
+type characterSliceLessByHP []*battle.Warrior
 
-func (c CharacterSlice) Len() int {
+func (c characterSliceLessByHP) Len() int {
 	return len(c)
 }
-func (c CharacterSlice) Swap(i, j int) {
+func (c characterSliceLessByHP) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
-func (c CharacterSlice) Less(i, j int) bool {
-	return c[i].HP < c[j].HP
+func (c characterSliceLessByHP) Less(i, j int) bool {
+	return c[i].HP.GetValue().Get() < c[j].HP.GetValue().Get()
 }
 
 type ChooseByWeak struct {
@@ -39,24 +39,24 @@ func(self *ChooseByWeak) Config(args ...interface{}){
 }
 //选择器开始进行对象选择
 //按照敌人虚弱程度进行选择，通常
-func(self *ChooseByWeak) Choose(from interface{},stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool) {
-	from, ok := from.(battle.Warrior)
+func(self *ChooseByWeak) Choose(fromWho interface{},stepName string,params ...interface{})(targets []effect.EffectCarrier,error bool) {
+
+	error = true
+	from, ok := fromWho.(*battle.Warrior)
 	if ok{
-		battleIn := from.BattleIn
-		enemy := battleIn.GetEnemy(from.Player)
+		//首先获得攻击者的敌人
+		enemy := from.BattleIn.GetEnemyWarriors(from.Player)
 		if len(enemy) > 0 {
-			//这里为了简单，就取第一个对手势力
-			firstEnemy := enemy[0]
 			n := self.num
 			//取最弱的n个,先按照hp排序，最少的放前面
-			characters := (CharacterSlice)(battleIn.PlayerCharactersList[firstEnemy.Id])
+			characters := (characterSliceLessByHP)(enemy)
 
 			if !sort.IsSorted(characters) {
 				sort.Sort(characters)
 			}
 
 			//然后返回前n个
-			warriors := battleIn.PlayerCharactersList[firstEnemy.Id][0:n]
+			warriors := characters[0:n]
 
 			targets = make([]effect.EffectCarrier,0,len(warriors))
 
@@ -65,11 +65,7 @@ func(self *ChooseByWeak) Choose(from interface{},stepName string,params ...inter
 			}
 
 			error = false
-			return
-		}else {
-			return nil, nil
 		}
-	}else{
-		return nil,true
 	}
+	return
 }

@@ -2,6 +2,7 @@ package battle
 import (
 	"survive/server/logic/dataStructure"
 	"survive/server/logic/player"
+	"fmt"
 )
 
 //type PlayerReport struct {
@@ -31,6 +32,7 @@ func(self *BattleReport)AddRecords(actionRecords []ActionRecord){
 	return
 }
 func(self *BattleReport)AddRecord(actionRecord ActionRecord){
+	fmt.Printf("战斗报告(%v):\n[%v] \n",len(self.Reports)+1,actionRecord)
 	self.Reports = append(self.Reports,actionRecord)
 	return
 }

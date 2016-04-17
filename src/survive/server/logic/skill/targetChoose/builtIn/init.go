@@ -10,5 +10,10 @@ func RegBuiltInChoosers(){
 		}
 		return chooser
 	})
+	targetChoose.RegisterFactory("ChooseByAttackRegion",func() targetChoose.TargetChooser{
+		chooser := &ChooseByAttackRegion{
+		}
+		return chooser
+	})
 }
 

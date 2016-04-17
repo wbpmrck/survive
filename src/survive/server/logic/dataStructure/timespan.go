@@ -25,18 +25,19 @@ func(self TimeSpan) Slice(ts TimeSpan) (remain TimeSpan){
 }
 
 //输入一个现实世界中流逝的时间(毫秒为单位)，产生一个包含游戏流逝时间的时间片
-func NewMilliSecondSpan(realSpanInMS time.Duration,rate int) TimeSpan{
+func NewMilliSecondSpan(realSpanInMS time.Duration,rate float32) TimeSpan{
 	realSpanInMicro := realSpanInMS * 1000000
 	return TimeSpan{
 		RealSpan:realSpanInMicro,
-		GameSpan:realSpanInMicro* time.Duration(rate),
+		GameSpan:time.Duration(float64(realSpanInMicro)* float64(rate)),
 	}
 }
 //输入一个游戏世界中流逝的时间(毫秒为单位)，产生一个包含游戏流逝时间的时间片
-func NewMilliSecondSpanWithGameSpan(gameSpanInMS time.Duration,rate int) TimeSpan{
+func NewMilliSecondSpanWithGameSpan(gameSpanInMS time.Duration,rate float32) TimeSpan{
 	gameSpanInMicro := gameSpanInMS * 1000000
 	return TimeSpan{
-		RealSpan:gameSpanInMicro / time.Duration(rate),
+//		RealSpan:gameSpanInMicro / time.Duration(rate),
+		RealSpan:time.Duration(float64(gameSpanInMicro) / float64(rate)),
 		GameSpan:gameSpanInMicro,
 	}
 }

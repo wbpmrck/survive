@@ -7,12 +7,19 @@ import (
 	"survive/server/logic/skill/effect"
 	"fmt"
 	"survive/server/logic/battle"
-"survive/server/logic/skill/effect/builtIn"
+	buildInEffect "survive/server/logic/skill/effect/builtIn"
+	buildInChoosers "survive/server/logic/skill/targetChoose/builtIn"
+	"survive/server/logic/skill/targetChoose"
 )
 
 
 func main(){
-	builtIn.RegBuiltInEffects()
+	buildInEffect.RegBuiltInEffects()
+	buildInChoosers.RegBuiltInChoosers()
+
+	attackChooser := targetChoose.Create("ChooseByWeak")
+	attackChooser.Config(1) //选择攻击范围里1个人
+
 	//创建2个角色
 	ch1 := character.NewCharacter("id1","giveName1","familyName1",nil)
 	ch2 := character.NewCharacter("id2","giveName2","familyName2",nil)
@@ -26,7 +33,7 @@ func main(){
 	ch1.SetAttr(attribute.NewAttribute(attribute.AWARE,"感知",10))
 	ch1.SetAttr(attribute.NewAttribute(attribute.UNDERSTAND,"悟性",10))
 
-	warrior1 := battle.NewWarrior(ch1,nature.Physical,12,0,200,30,200,20,12,30)
+	warrior1 := battle.NewWarrior(ch1,nature.Physical,attackChooser,12,0,200,30,200,20,12,30)
 
 	ch2.SetAttr(attribute.NewAttribute(attribute.AGI,"敏捷",10))
 	ch2.SetAttr(attribute.NewAttribute(attribute.STR,"力量",10))
@@ -36,7 +43,7 @@ func main(){
 	ch2.SetAttr(attribute.NewAttribute(attribute.AWARE,"感知",10))
 	ch2.SetAttr(attribute.NewAttribute(attribute.UNDERSTAND,"悟性",10))
 
-	warrior2 := battle.NewWarrior(ch2,nature.Physical,12,0,200,30,200,20,12,30)
+	warrior2 := battle.NewWarrior(ch2,nature.Physical,attackChooser,12,0,200,30,200,20,12,30)
 
 	//创建一个效果
 	modifyEffect := effect.Create("AttributeModify")

@@ -14,14 +14,20 @@ import (
 
 //事件
 const (
-	EVENT_WARRIOR_DEAD ="dead" //死亡
+	EVENT_WARRIOR_DEAD string ="dead" //死亡
 
 //	EVENT_WARRIOR_NEW_ACTION_RECORD ="NEW_ACTION_RECORD" //产生了新的动作日志
 
-	EVENT_WARRIOR_SKILL_CHOOSE ="SKILL_CHOOSE" //技能动作选择阶段(该阶段决定了用户是否能主动发出某个技能)
+	EVENT_WARRIOR_SKILL_CHOOSE string ="SKILL_CHOOSE" //技能动作选择阶段(该阶段决定了用户是否能主动发出某个技能)
 
-	EVENT_WARRIOR_NORMAL_ATTACK_PRE ="NORMAL_ATTACK_PRE" //普通攻击动作阶段（前）
-	EVENT_WARRIOR_NORMAL_ATTACK_AFTER ="NORMAL_ATTACK_AFTER" //普通攻击动作阶段（后）
+	EVENT_WARRIOR_NORMAL_ATTACK_PRE string ="NORMAL_ATTACK_PRE" //普通攻击动作阶段（前）
+//	EVENT_WARRIOR_NORMAL_ATTACK string ="NORMAL_ATTACK" //普通攻击动作阶段（ING）
+	EVENT_WARRIOR_NORMAL_ATTACK_AFTER string ="NORMAL_ATTACK_AFTER"
+
+	EVENT_WARRIOR_PROD_DAMAGE string ="PROD_DAMAGE" //造成了伤害
+	EVENT_WARRIOR_GET_DAMAGE string ="GET_DAMAGE" //受到了伤害
+
+	EVENT_WARRIOR_MOVE string ="MOVE" //移动
 
 )
 
@@ -40,6 +46,8 @@ const (
 //Character可以embed这个类型，来实现战斗
 type Warrior struct {
 	*character.Character //战斗者 首先是一个角色
+
+	SortSeed int //专门用于在各种排序需求下使用的字段，要注意使用时的竞态情况
 
 	Status int //状态
 	Size *attribute.Attribute //占据长度
@@ -73,13 +81,16 @@ type Warrior struct {
 
 	//下面是在战斗中才有意义的一些属性
 	BattleIn *Battle //所处的战场
-	Position dataStructure.BattlePos //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
+	Position int //战斗中，当前所处的位置(战场为一条线，左边是0，右边为增大方向)
 
 	//其他
 
 
 }
 
+func(self *Warrior) String()string{
+	return fmt.Sprintf("%v|%v",self.Character.String(),self.Position)
+}
 ////向外输出日志事件
 //func(self *Warrior) FireNewRecord(r ActionRecord){
 //	self.Emit(EVENT_WARRIOR_NEW_ACTION_RECORD,r)
@@ -97,7 +108,7 @@ func (self *Warrior) Active(){
 	}
 }
 //增减 hp
-func (self *Warrior) AddHP(v float64) {
+func (self *Warrior) AddHP(v float64,reasonEvtName string,byWho *Warrior) {
 
 	//已经dead 的无法修改hp
 	if self.Status == WARRIOR_ACTIVE {
@@ -108,20 +119,64 @@ func (self *Warrior) AddHP(v float64) {
 		if cur + v > max {
 			v = max - cur
 		}
+//		fmt.Printf("%v 准备扣除hp:%v",self.GetShowName(),v)
 		self.HP.GetValue().AddRaw(v)
+
+		if reasonEvtName != ""{
+			//发射事件
+			self.Emit(reasonEvtName,self,byWho,v)
+		}
+
 		//判断死亡
 		if self.HP.GetValue().Get() < 0 {
 			self.Status = WARRIOR_DEAD
 			//对外抛送事件
-			self.Emit(EVENT_WARRIOR_DEAD)
+			self.Emit(EVENT_WARRIOR_DEAD,self)
 		}
 	}
 }
 
 //进行移动。
 //目前移动逻辑很简单，移动到能够让对方角色进入攻击范围的位置
+//如果已经有可以攻击的对象在范围内，则不会移动
 func (self *Warrior)MoveAction(){
+	battleFiled := self.BattleIn.Field
+	//获取离自己攻击距离误差最少的敌人
+	side,reachDistance,_ := battleFiled.FindNearestAttackTarget(self)
 
+//	fmt.Printf("side = %v reachDistance = %v\n",side,reachDistance)
+
+	//如果已经可以够到，则不处理,只有够不到的时候，才需要移动
+	if reachDistance != 0{
+		//尽量向他移动，并让他置于自己攻击范围内
+		targetPos := self.Position
+
+		//计算自己能移动多远
+		eachOpMove := self.EachOpMoveDistance.GetValue().Get()
+		canMoveDistance := eachOpMove * self.OP.GetValue().Get()
+
+		if canMoveDistance < float64(reachDistance){
+			if side == 1{
+				//在右侧
+				targetPos += int(canMoveDistance)
+			}else{
+				targetPos -= int(canMoveDistance)
+			}
+		}else{
+			if side == 1{
+				//在右侧
+				targetPos += reachDistance
+			}else{
+				targetPos -=reachDistance
+			}
+		}
+
+		self.Emit(EVENT_WARRIOR_MOVE,self,self.Position,targetPos)
+		//移动到目标位置
+		moved := battleFiled.MoveCharacter(self,targetPos)
+		//消耗行动力
+		self.OP.GetValue().AddRaw(0-float64(moved)/eachOpMove)
+	}
 }
 
 //尝试进行普通攻击，返回是否成功进行攻击动作的标记
@@ -130,30 +185,52 @@ func (self *Warrior)NormalAttackAction() bool{
 	attacked := false
 	//先获取普通攻击的对象，如果有，进行普通攻击
 	targets := self.getNormalAttackTargets()
-	if len(targets>0){
+	if len(targets)>0{
 		attacked = true
+
+		//发射事件
+		self.Emit(EVENT_WARRIOR_NORMAL_ATTACK_PRE,self,targets)
+
 		//对每一个对象，进行攻击
 		for _,t := range targets{
 			self.attack(t)
 		}
+		//发射事件
+		self.Emit(EVENT_WARRIOR_NORMAL_ATTACK_AFTER,self,targets)
+
 		//如果成功，则扣除动作点数
-		self.OP.GetValue().AddRaw(self.EachActionCostOP.GetValue().Get())
+		self.OP.GetValue().AddRaw(-self.EachActionCostOP.GetValue().Get())
 	}
 	return attacked
 }
 //对某个对象进行普通攻击操作
 func (self *Warrior) attack(target *Warrior){
 
+	//先看是否暴击
+	isCritical := IsCriticalAttack(self,target,self.NormalAttackNature)
+
+	//获取对对方造成的伤害
+	damage := GetDamage(self,target,self.NormalAttackNature,isCritical)
+	//发射事件
+	self.Emit(EVENT_WARRIOR_PROD_DAMAGE,self,target,damage)
+
+	//扣除对方的 hp
+	target.AddHP(-damage,EVENT_WARRIOR_GET_DAMAGE,self)
+
+//	发射事件
+//	target.Emit(EVENT_WARRIOR_GET_DAMAGE,target,self,damage)
 }
 
 //获取当前普通攻击的对象
 func (self *Warrior)getNormalAttackTargets()[]*Warrior{
 	warriorTargets := make([]*Warrior,0)
 	if self.NormalAttackChooser != nil{
+		fmt.Printf("%v 获取进攻对象 \n",self)
 		targets,err := self.NormalAttackChooser.Choose(self,EVENT_WARRIOR_NORMAL_ATTACK_PRE)
 
 		//如果获取对象成功
 		if !err && targets!= nil && len(targets)>0{
+			fmt.Printf("获取对象成功：%v \n",targets)
 			for _,target := range targets{
 
 				//尝试把对象转化为warrior
@@ -172,7 +249,7 @@ func (self *Warrior)getNormalAttackTargets()[]*Warrior{
 func (self *Warrior)SkillAction() []*skill.SkillItem{
 	skillItems := make([]*skill.SkillItem,0)
 	//遍历所有技能动作钩子，执行并拿到执行结果，返回
-	results := self.Emit(EVENT_WARRIOR_SKILL_CHOOSE)
+	results := self.Emit(EVENT_WARRIOR_SKILL_CHOOSE,self)
 	if len(results)>0{
 		for _,r := range results{
 			if r.HandleResult!=nil{
@@ -180,7 +257,7 @@ func (self *Warrior)SkillAction() []*skill.SkillItem{
 			}
 		}
 		//如果释放成功，则扣除动作点数
-		self.OP.GetValue().AddRaw(self.EachActionCostOP.GetValue().Get())
+		self.OP.GetValue().AddRaw(-self.EachActionCostOP.GetValue().Get())
 	}
 
 	return skillItems
@@ -213,19 +290,21 @@ func(self *Warrior) Act(){
 	/*
 		判断行动点数是否足够进行一次动作
 	 */
-	canAction := self.OP.GetValue().Get()>self.EachActionCostOP.GetValue().Get()
+	nowOp := self.OP.GetValue().Get()
+	canAction := nowOp>self.EachActionCostOP.GetValue().Get()
 
 	//如果是，则进行动作选择阶段
 	if canAction{
+		fmt.Printf("Warrior:[%v] 准备行动: hp=[%v],ap=[%v],op=[%v] \n",self.GetShowName(),self.HP.GetValue(),self.AP.GetValue(),self.OP.GetValue())
 
 		/*
 			执行阶段：【技能选择】
 			1.在技能选择阶段,每个技能都可以通过在这个阶段注册事件，并以一定的概率释放自己
 			2.一旦技能选择阶段有技能被释放，那么本次普通攻击阶段就会跳过
 		 */
-		releasedSkillItemRecords := self.SkillAction()
+//		releasedSkillItemRecords := self.SkillAction()
 		//没有技能被释放
-		if len(releasedSkillItemRecords)<1{
+//		if len(releasedSkillItemRecords)<1{
 			//进行普通攻击
 			attackRecords := self.NormalAttackAction()
 
@@ -236,8 +315,8 @@ func(self *Warrior) Act(){
 				//移动过后，重新执行Action
 				self.Act()
 			}
-		}
-	}else{
+//		}
+	}else if nowOp>1{
 		//如果无法完成一次动作(攻击、技能等)，则尝试移动
 		self.MoveAction()
 	}
@@ -248,7 +327,7 @@ func(self *Warrior) Act(){
 //接收一个时间片，开始决定自己的行动
 //每次接收时间片，要返回一个动作列表，表示这次行动得到的反馈结果
 func(self *Warrior) Receive(ts dataStructure.TimeSpan){
-	fmt.Printf("Warrior:[%v] ActSeq:[%v] receive time:%v \n",self.GetShowName(),self.ActSeq.GetValue(),ts)
+//	fmt.Printf("Warrior:[%v] ActSeq:[%v] receive time:%v \n",self.GetShowName(),self.ActSeq.GetValue(),ts)
 
 	//如果是非激活状态，则进行激活
 	if self.Status == WARRIOR_INACTIVE{
@@ -265,7 +344,8 @@ func(self *Warrior) Receive(ts dataStructure.TimeSpan){
 	/*
 		开始角色的行动：
 	 */
-	return self.Act()
+	self.Act()
+	return
 }
 
 
@@ -279,7 +359,7 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 		Character:character,
 		Status:WARRIOR_INACTIVE,
 		Size:attribute.NewAttribute("size","大小",size),
-		NormalAttackSection:dataStructure.NewSection(attackFrom,attackTo),
+		NormalAttackSection:dataStructure.NewSection("attackSection","攻击范围",attackFrom,attackTo),
 		NormalAttackNature:normalAttackNature,
 		NormalAttackChooser:normalAttackChooser,
 		EachOpMoveDistance:attribute.NewAttribute("EachOpMoveDistance","每一个Op可以移动的距离长度",eachOpMoveDistance),
@@ -329,6 +409,7 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 	w.EachActionCostOP =attribute.NewComputedAttribute("EachActionCostOP","动作消耗的Op数量",0,
 		func(dependencies... attribute.AttributeLike) float64{
 			base := 128.0
+//			base := 32.0
 			agi :=dependencies[0].GetValue().Get()
 			return base -math.Floor( agi/50 )
 		},AGI)
@@ -446,10 +527,10 @@ func NewWarrior(character *character.Character,normalAttackNature nature.Nature,
 	//计算属性：生命值回复(每秒)
 	w.HpRecover =attribute.NewComputedAttribute("HpRecover","生命值回复",0,
 		func(dependencies... attribute.AttributeLike) float64{
-			base:=1.0
+			base:=0.4
 			vit :=dependencies[0].GetValue().Get()
 
-			return base+0.1*vit+(1*math.Floor(vit/5))
+			return base+0.01*vit+(0.02*math.Floor(vit/5))
 		},VIT)
 
 	w.HP = attribute.NewRegeneratedAttribute("HP","当前Hp",hp,w.MaxHp.GetValue(),w.HpRecover.GetValue(),1*time.Second)

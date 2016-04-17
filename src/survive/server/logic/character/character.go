@@ -25,6 +25,9 @@ type Character struct {
 func(self *Character) SetPlayer(p *player.Player ){
 	self.Player = p
 }
+func(self *Character) String()string{
+	return self.GetShowName()
+}
 //获取角色展示时候的称呼
 func(self *Character) GetShowName()string{
 	return fmt.Sprintf("%v-%v",self.GivenName,self.FamilyName)

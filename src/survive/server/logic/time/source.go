@@ -60,7 +60,7 @@ func(self *Source) AppendReceiver(rec Receiver){
 }
 
 //创建一个时间源(当前时刻，每一帧发出的游戏时间间隔，时间流逝速度)
-func NewSource(now dataStructure.Time,gameTimeUnitInMs time.Duration,timeRate int) *Source{
+func NewSource(now dataStructure.Time,gameTimeUnitInMs time.Duration,timeRate float32) *Source{
 	return &Source{
 		Now:now,
 		GameTimeUnit:dataStructure.NewMilliSecondSpanWithGameSpan(gameTimeUnitInMs,timeRate),

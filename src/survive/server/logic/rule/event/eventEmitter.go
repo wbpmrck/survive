@@ -1,4 +1,8 @@
 package event
+//todo:TTL功能还未实现
+const (
+	ALL_CHAN string ="*"
+)
 
 /*
 	* 支持通用的事件订阅、发布模型
@@ -24,12 +28,13 @@ type EventEmitter interface {
 	实现一个简单通用的事件收集、发射器
  */
 type EventEmitterBase struct {
-	Slots map[string][]*EventHandler //事件槽 ：map.key是事件名 map.value是一个处理函数队列
+	slots map[string][]*EventHandler //事件槽 ：map.key是事件名 map.value是一个处理函数队列
 }
+
 //发射一个事件，并收集所有处理函数的返回信息
 func(self *EventEmitterBase) Emit(evtName string,params ...interface{}) []HandleResult{
 	//获取要发射的事件有多少处理函数
-	slot,exist := self.Slots[evtName]
+	slot,exist := self.slots[evtName]
 	result := make([]HandleResult,0,len(slot))
 	if exist{
 		for _,handler:= range slot{
@@ -40,6 +45,29 @@ func(self *EventEmitterBase) Emit(evtName string,params ...interface{}) []Handle
 			})
 		}
 	}
+
+	//再看有没有订阅了*的，有的话也调用
+	subAll,existAll:= self.slots[ALL_CHAN]
+	if existAll && subAll!= nil && len(subAll)>0{
+		//有的话，修改输入参数，进行调用
+
+		resultAll := make([]HandleResult,0,len(subAll))
+		newParam := make([]interface{},0,len(params)+1)
+
+		//修改后的输入参数，第一个参数是消息名
+		newParam = append(newParam,evtName)
+		newParam = append(newParam,params...)
+		for _,handler:= range subAll{
+			isCancel,r := handler.Func(newParam ...)
+			resultAll = append(resultAll,HandleResult{
+				IsCancel:isCancel,
+				HandleResult:r,
+			})
+		}
+		//把执行结果加到后面
+		result = append(result,resultAll...)
+	}
+
 	return result
 }
 
@@ -52,22 +80,22 @@ func(self *EventEmitterBase) Once(evtName string,handler *EventHandler) HandlerI
 //订阅事件处理函数
 func(self *EventEmitterBase) On(evtName string,handler *EventHandler) HandlerId{
 	//如果该事件槽还未被订阅过，则创建事件槽
-	_,exist := self.Slots[evtName]
+	_,exist := self.slots[evtName]
 	if !exist{
-		self.Slots[evtName] = make([]*EventHandler,0)
+		self.slots[evtName] = make([]*EventHandler,0)
 	}
 	//在槽中添加对应事件处理函数
-	self.Slots[evtName] = append(self.Slots[evtName],handler)
+	self.slots[evtName] = append(self.slots[evtName],handler)
 
 	return HandlerId{
 		SlotKey:evtName,
-		IndexInSlot:len(self.Slots[evtName])-1,
+		IndexInSlot:len(self.slots[evtName])-1,
 	}
 }
 
 //根据事件处理函数id,取消一个订阅
 func(self *EventEmitterBase) Off(id HandlerId) bool {
-	slot,exist:=self.Slots[id.SlotKey]
+	slot,exist:=self.slots[id.SlotKey]
 	if exist{
 		slot = append(slot[:id.IndexInSlot], slot[id.IndexInSlot+1:]...)
 		return true
@@ -77,6 +105,6 @@ func(self *EventEmitterBase) Off(id HandlerId) bool {
 
 func NewEventEmitter()*EventEmitterBase{
 	return &EventEmitterBase{
-		Slots:make(map[string][]*EventHandler),
+		slots:make(map[string][]*EventHandler),
 	}
 }

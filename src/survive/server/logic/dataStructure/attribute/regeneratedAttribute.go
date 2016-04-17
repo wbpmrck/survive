@@ -12,22 +12,22 @@ import (
 
 
 type RegeneratedAttribute struct {
-	*Attribute //恢复属性首先自己是一个属性
-	Max *Value  //该属性值恢复的上限
-	RegenerateCountPerTick *Value  //每次恢复属性的多少
-	TickDuration time.Duration //表示2次恢复间隔的时间长短
-	TotalDuration time.Duration //表示已经积累的恢复时间
+	*Attribute                           //恢复属性首先自己是一个属性
+	Max                    *Value        //该属性值恢复的上限
+	RegenerateCountPerTick *Value        //每次恢复属性的多少
+	tickDuration           time.Duration //表示2次恢复间隔的时间长短
+	totalDuration          time.Duration //表示已经积累的恢复时间
 }
 
 func(self *RegeneratedAttribute)String()string{
-	return fmt.Sprintf("[%s|%s = %v/%v]",self.name,self.desc,self.val,self.Max)
+	return fmt.Sprintf("[%s|%s = %v/%v,回复速度:%v/%v]",self.name,self.desc,self.val,self.Max,self.RegenerateCountPerTick,self.tickDuration)
 }
 func(self *RegeneratedAttribute)TimeAcquire(ts time.Duration){
 	//如果当前属性满,不处理。不满才可以处理
 	if self.val.GetRaw() < self.Max.Get(){
-		self.TotalDuration += ts //先新增积累的时间
+		self.totalDuration += ts //先新增积累的时间
 		//判断时间是否达到恢复间隔
-		if self.TotalDuration >= self.TickDuration{
+		if self.totalDuration >= self.tickDuration {
 			//判断回复量
 			cur := self.val.GetRaw()
 			reg := self.RegenerateCountPerTick.Get()
@@ -38,7 +38,7 @@ func(self *RegeneratedAttribute)TimeAcquire(ts time.Duration){
 				self.val.AddRaw(reg)
 			}
 
-			self.TotalDuration -= self.TickDuration
+			self.totalDuration -= self.tickDuration
 		}
 	}
 }
@@ -47,8 +47,8 @@ func NewRegeneratedAttribute(name,desc string,rawValue float64,max,regCountPerTi
 		Attribute:NewAttribute(name,desc,rawValue),
 		Max:max,
 		RegenerateCountPerTick:regCountPerTick,
-		TickDuration:tickDuration,
-		TotalDuration:0,
+		tickDuration:tickDuration,
+		totalDuration:0,
 	}
 
 	return c

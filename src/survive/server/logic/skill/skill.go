@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"survive/server/logic/rule/event"
 	"survive/server/logic/math"
+	"survive/server/logic/dataStructure/attribute"
 )
 /*
 	关于技能的设计：
@@ -47,11 +48,10 @@ func(self *Skill) AddSkillItem(item *SkillItem) {
 	}
 }
 
-const MaxProbability int = 1000 + 1 //表示最大可能性的概率值(1000/1000)
 //表示一个技能项
 type SkillItem struct {
 	SkillParent *Skill //指向包含自己的技能项
-	Probability int //技能项释放的概率(千分位)
+	Probability *attribute.Attribute //技能项释放的概率(千分位)
 	PluginStep Step //技能项插入技能持有者动作的时机(skillItem通过注册skillCarrier的这个事件,来决定何时调用effect)
 	Chooser targetChoose.TargetChooser //在固定时机的基础上，chooser决定效果的作用对象
 	EffectItems []effect.Effect
@@ -67,23 +67,24 @@ func(self *SkillItem) AddEffect( e effect.Effect){
 	self.EffectItems = append(self.EffectItems,e)
 }
 func(self *SkillItem) Install(){
+	releaser := self.SkillParent.Carrier
 	//在技能持有者身上订阅触发技能的事件
-	if self.SkillParent.Carrier != nil{
+	if  releaser!= nil{
 		//在指定的阶段
 		stepName:=self.PluginStep.StepName
 
 		//技能项在指定阶段决定是否进行效果释放处理。
 		//返回信息
 			//类型:*SkillItem
-		self.SkillParent.Carrier.On(stepName,event.NewEventHandler(func(contextParams ...interface{}) (isCancel bool,handleResult interface{}){
+		releaser.On(stepName,event.NewEventHandler(func(contextParams ...interface{}) (isCancel bool,handleResult interface{}){
 
 			//先看概率是否释放
-			thisTimeProbability := math.NextRandomInt(MaxProbability)
-			if self.Probability >= thisTimeProbability{
+			thisTimeProbabilityHit := math.IsHitByFloatProbability(self.Probability.GetValue().Get())
+			if thisTimeProbabilityHit {
 				//概率命中了，还要看是否能找到作用对象
 
 				//再找到指定的作用对象
-				targets,err := self.Chooser.Choose(self.SkillParent.Carrier,stepName,contextParams...)
+				targets,err := self.Chooser.Choose(releaser,stepName,contextParams...)
 				if !err && targets!= nil && len(targets)>0{
 
 					//有作用对象，还要看pre 阶段是否被取消
@@ -91,27 +92,27 @@ func(self *SkillItem) Install(){
 
 					//触发技能持有者的技能释放事件(前)
 					//处理函数将得到一个参数：*SkillItem
-					onBeforeResults:= self.SkillParent.Carrier.Emit(EVENT_BEFORE_SKILL_ITEM_RELEASE,self)
+					onBeforeResults:= releaser.Emit(EVENT_BEFORE_SKILL_ITEM_RELEASE,releaser,self)
 					for _,r := range onBeforeResults{
 						if r.IsCancel{
 							cancel = true
 							//执行cancel 阶段[技能被取消释放]
-							self.SkillParent.Carrier.Emit(EVENT_CANCEL_SKILL_ITEM_RELEASE,self)
+							releaser.Emit(EVENT_CANCEL_SKILL_ITEM_RELEASE,releaser,self)
 							break
 						}
 					}
 					//没取消，进入释放
 					if !cancel{
-						self.SkillParent.Carrier.Emit(EVENT_SKILL_ITEM_RELEASE,self)
+						releaser.Emit(EVENT_SKILL_ITEM_RELEASE,releaser,self)
 						for _,target := range targets{
 							//对每一个效果，使用PutOn进行触发
 							for _,effectItem := range self.EffectItems{
-								effectItem.PutOn(self.SkillParent.Carrier,target)
+								effectItem.PutOn(releaser,target)
 							}
 						}
 						handleResult = self //释放成功
 						//释放结束，执行 after 阶段
-						self.SkillParent.Carrier.Emit(EVENT_AFTER_SKILL_ITEM_RELEASE,self)
+						releaser.Emit(EVENT_AFTER_SKILL_ITEM_RELEASE,releaser,self)
 					}
 
 				}
@@ -139,9 +140,9 @@ func NewSkill(name string,level int,exp int) *Skill{
 }
 
 //创建一个技能项
-func NewSkillItem(parent *Skill,plugStep Step, chooser targetChoose.TargetChooser,probability int) *SkillItem{
+func NewSkillItem(parent *Skill,plugStep Step, chooser targetChoose.TargetChooser,probability float64) *SkillItem{
 	return &SkillItem{
-		Probability:probability,
+		Probability:attribute.NewAttribute("Probability","技能释放概率",probability),
 		SkillParent:parent,
 		PluginStep:plugStep,
 		Chooser:chooser,
